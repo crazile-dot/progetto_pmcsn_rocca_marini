@@ -1,8 +1,3 @@
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-
 class Node {
     int type;                       /* node=0: FF; node=1: N */
     int number;                     /* numero di job nel singolo nodo */
@@ -33,7 +28,7 @@ class Area {
     - DA RICORDARE: il primo evento è l'arrivo al nodo 1, il secondo è l'arrivo al nodo 0, poi gli m server e poi il single server
  */
 
-public class Main {
+public class ModelloIniziale {
 
     static double START = 0.0;              /* initial time                   */
     static double STOP  = 10.0;          /* terminal (close the door) time */
@@ -51,7 +46,7 @@ public class Main {
 
         int idx = 1;
 
-        Rngs r = new Rngs();
+        Rngs_1 r = new Rngs_1();
         r.plantSeeds(123456789);
 
 
@@ -263,7 +258,7 @@ public class Main {
     } */
 
 
-    public static double exponential(double m, Rngs r) {
+    public static double exponential(double m, Rngs_1 r) {
         /* ---------------------------------------------------
          * generate an Exponential random variate, use m > 0.0
          * ---------------------------------------------------
@@ -271,7 +266,7 @@ public class Main {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    public static double uniform(double a, double b, Rngs r) {
+    public static double uniform(double a, double b, Rngs_1 r) {
         /* ------------------------------------------------
          * generate an Uniform random variate, use a < b
          * ------------------------------------------------
@@ -279,18 +274,18 @@ public class Main {
         return (a + (b - a) * r.random());
     }
 
-    public static double getArrival(Rngs r) {
+    public static double getArrival(Rngs_1 r) {
         /* --------------------------------------------------------------
          * generate the next arrival time, with rate 1/2
          * --------------------------------------------------------------
          */
         r.selectStream(0);
         sarrival += exponential(2.0, r);
-        return (Main.sarrival);
+        return (ModelloIniziale.sarrival);
     }
 
 
-    public static double getService(Rngs r) {
+    public static double getService(Rngs_1 r) {
         /* ------------------------------
          * generate the next service time, with rate 1/6
          * ------------------------------

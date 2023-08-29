@@ -6,7 +6,7 @@
  * terminal time STOP, and the service node is then purged by processing any
  * remaining jobs in the service node.
  *
- * Name              : Ssq3.java  (Single Server Queue, version 3)
+ * Name              : Ssq3_1.java  (Single Server Queue, version 3)
  * Authors           : Steve Park & Dave Geyer
  * Translated by     : Jun Wang
  * Language          : Java
@@ -54,7 +54,7 @@ class Ssq3 {
 
         Ssq3 s = new Ssq3();
 
-        Rngs r = new Rngs();
+        Rngs_1 r = new Rngs_1();
         r.plantSeeds(123456789);
 
         Ssq3T t      = new Ssq3T();
@@ -107,7 +107,7 @@ class Ssq3 {
     }
 
 
-    double exponential(double m, Rngs r) {
+    double exponential(double m, Rngs_1 r) {
         /* ---------------------------------------------------
          * generate an Exponential random variate, use m > 0.0
          * ---------------------------------------------------
@@ -115,7 +115,7 @@ class Ssq3 {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    double uniform(double a, double b, Rngs r) {
+    double uniform(double a, double b, Rngs_1 r) {
         /* ------------------------------------------------
          * generate an Uniform random variate, use a < b
          * ------------------------------------------------
@@ -123,7 +123,7 @@ class Ssq3 {
         return (a + (b - a) * r.random());
     }
 
-    double getArrival(Rngs r) {
+    double getArrival(Rngs_1 r) {
         /* ---------------------------------------------
          * generate the next arrival time, with rate 1/2
          * ---------------------------------------------
@@ -134,7 +134,7 @@ class Ssq3 {
     }
 
 
-    double getService(Rngs r) {
+    double getService(Rngs_1 r) {
         /* --------------------------------------------
          * generate the next service time with rate 2/3
          * --------------------------------------------

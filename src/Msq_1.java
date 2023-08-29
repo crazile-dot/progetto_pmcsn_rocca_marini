@@ -12,9 +12,7 @@
  * ------------------------------------------------------------------------- 
  */
 
-import java.io.*;
 import java.lang.*;
-import java.text.*;
 
 
 class MsqT {
@@ -33,7 +31,7 @@ class MsqEvent{                     /* the next-event list    */
 }
 
 
-class Msq {
+class Msq_1 {
   static double START   = 0.0;            /* initial (open the door)        */
   static double STOP    = 10.0;        /* terminal (close the door) time */
   static int    SERVERS = 4;              /* number of servers              */
@@ -50,8 +48,8 @@ class Msq {
     double area   = 0.0;           /* time integrated number in the node */
     double service;
     
-    Msq m = new Msq();
-    Rngs r = new Rngs();
+    Msq_1 m = new Msq_1();
+    Rngs_1 r = new Rngs_1();
     r.plantSeeds(0);
 
 
@@ -143,7 +141,7 @@ class Msq {
   }
 
   
-  double exponential(double m, Rngs r) {
+  double exponential(double m, Rngs_1 r) {
 /* ---------------------------------------------------
  * generate an Exponential random variate, use m > 0.0
  * ---------------------------------------------------
@@ -151,7 +149,7 @@ class Msq {
     return (-m * Math.log(1.0 - r.random()));
   }
 
-  double uniform(double a, double b, Rngs r) {
+  double uniform(double a, double b, Rngs_1 r) {
 /* --------------------------------------------
  * generate a Uniform random variate, use a < b
  * --------------------------------------------
@@ -159,7 +157,7 @@ class Msq {
     return (a + (b - a) * r.random());
   }
 
-  double getArrival(Rngs r) {
+  double getArrival(Rngs_1 r) {
 /* --------------------------------------------------------------
  * generate the next arrival time, with rate 1/2
  * --------------------------------------------------------------
@@ -170,7 +168,7 @@ class Msq {
   }
 
 
-  double getService(Rngs r) {
+  double getService(Rngs_1 r) {
 /* ------------------------------
  * generate the next service time, with rate 1/6
  * ------------------------------

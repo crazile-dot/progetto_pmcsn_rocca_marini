@@ -37,7 +37,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class Rngs {
+public class Rngs_1 {
 
   long MODULUS      = 2147483647; /* DON'T CHANGE THIS VALUE                  */
   long MULTIPLIER   = 48271;      /* DON'T CHANGE THIS VALUE                  */
@@ -66,12 +66,12 @@ public class Rngs {
 
   public static void main(String[] args) {
       
-    Rngs r = new Rngs();
+    Rngs_1 r = new Rngs_1();
     r.testRandom();
   }
 
 
-  public Rngs () {
+  public Rngs_1() {
     seed = new long[STREAMS];
 
     /* Barry Lawson 8 Nov 2007 */
