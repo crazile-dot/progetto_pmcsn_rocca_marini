@@ -5,6 +5,7 @@ class Node {
     int area;
 }
 
+
 class Area {
     double node;                    /* time integrated number in the node  */
     double queue;                   /* time integrated number in the queue */
@@ -132,11 +133,11 @@ public class ModelloIniziale {
             System.out.println("Coda nodo N 1: " + (nodes[8].number - event[25].x ));
             System.out.println("Coda nodo FF: " + (nodes[4].number - event[20].x));
             System.out.println("Coda nodo FF: " + (nodes[9].number - event[21].x));
-            System.out.println("Server 1 check in: " + event[40].x);
-            System.out.println("Server 2 check in: " + event[41].x);
-            System.out.println("Server 3 check in: " + event[42].x);
-            System.out.println("Server 4 check in: " + event[43].x);
-            System.out.println("Server 5 check in (FF): " + event[39].x);
+            System.out.println("Server 1 imbarco: " + event[40].x);
+            System.out.println("Server 2 imbarco: " + event[41].x);
+            System.out.println("Server 3 imbarco: " + event[42].x);
+            System.out.println("Server 4 imbarco: " + event[43].x);
+            System.out.println("Server 5 imbarco (FF): " + event[39].x);
             System.out.println("Coda nodo N: " + (nodes[14].number - event[40].x - event[41].x - event[42].x-event[43].x));
             System.out.println("Coda nodo FF: " + (nodes[13].number - event[39].x));
             System.out.println(number);
@@ -195,7 +196,7 @@ public class ModelloIniziale {
                         event[1].x = 0;
                     }
                 }
-                if (e == 1 && nodes[0].number == 1) {
+                if (e == Values.SERVERS_DEDICATO_BIGLIETTERIA && nodes[0].number == 1) {
 
                     singleService = ssq.getService(r);
                     sum[6].service += singleService;
@@ -203,7 +204,7 @@ public class ModelloIniziale {
                     event[6].t = t.current + singleService;
                     event[6].x = 1;
                 }
-               else if (e == 0 && nodes[1].number <= SERVERS) {
+               else if (e == 0 && nodes[1].number <= Values.SERVERS_BIGLIETTERIA) {
                     multiService = getService(r);
                     s = findOne(event, 2, SERVERS + 2 - 1);
                     sum[s].service += multiService;
@@ -216,61 +217,61 @@ public class ModelloIniziale {
 
 
             }
-            else if(e==8){ /* server dedicato*/
+            else if(e==2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1){ /* server dedicato*/
                 event[8].x=0;
                 //number++;
                 nodes[2].number++;
                 //idx++????
                 if(nodes[2].number==1){
                     singleService = ssq.getService(r);
-                    sum[9].service += singleService;
-                    sum[9].served++;
-                    event[9].t = t.current + singleService;
-                    event[9].x = 1;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].service += singleService;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].served++;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].t = t.current + singleService;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].x = 1;
                 }
 
             }
-            else if(e==7){
+            else if(e==2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA){
                 event[7].x=0;
                // number++;
                 nodes[3].number++;
                 //idx++????
-                if(nodes[3].number<=SERVERS){
+                if(nodes[3].number<=Values.SERVERS_CHECK_IN){
                     multiService = getService(r);
-                    s = findOne(event, 10, 13);
+                    s = findOne(event, 2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+1, 2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
                     event[s].x = 1;
                 }
             }
-            else if(e==15){
-                event[15].x=0;
+            else if(e==2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+2){
+                event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+2].x=0;
                 //number++;
                 nodes[9].number++;
                 //idx++????
                 if(nodes[9].number==1){
                     singleService = ssq.getService(r);
-                    sum[21].service += singleService;
-                    sum[21].served++;
-                    event[21].t = t.current + singleService;
-                    event[21].x = 1;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service += singleService;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].served++;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].t = t.current + singleService;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].x = 1;
                 }
             }
-            else if (e==14){
-                event[14].x=0;
+            else if (e==2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+1){
+                event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+1].x=0;
                 //number++;
                 nodes[4].number++;
                 //idx++????
                 if(nodes[4].number==1){
                     singleService = ssq.getService(r);
-                    sum[20].service += singleService;
-                    sum[20].served++;
-                    event[20].t = t.current + singleService;
-                    event[20].x = 1;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].service += singleService;
+                    sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].served++;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].t = t.current + singleService;
+                    event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].x = 1;
                 }
             }
-            else if(e>=16 && e<=19){
+            else if(e>=2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+1 && e<=2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA){
                 event[e].x=0;
                 //number++;
                 int p=find_number_node(e);
@@ -279,51 +280,51 @@ public class ModelloIniziale {
                 if(nodes[p].number==1){
                     singleService = ssq.getService(r);
 
-                    sum[e+SERVERS+SERVERS_DEDICATO*2].service += singleService;
-                    sum[e+SERVERS+SERVERS_DEDICATO*2].served++;
-                    event[e+SERVERS+SERVERS_DEDICATO*2].t = t.current + singleService;
-                    event[e+SERVERS+SERVERS_DEDICATO*2].x = 1;
+                    sum[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service += singleService;
+                    sum[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].served++;
+                    event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].t = t.current + singleService;
+                    event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].x = 1;
                 }
             }
-            else if (e==26){  /* servers prioritario secuirty*/
-                event[26].x=0;
+            else if (e==2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA){  /* servers prioritario secuirty*/
+                event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA].x=0;
                 // number++;
                 nodes[10].number++;
                 //idx++????
                 if(nodes[10].number<=2){
                     multiService = getService(r);
-                    s = findOne(event, 28, 29);
+                    s = findOne(event, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+2, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
                     event[s].x = 1;
                 }
             }
-            else if(e==27){
-                event[27].x=0;
+            else if(e==2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1){
+                event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].x=0;
                 // number++;
                 nodes[11].number++;
                 //idx++????
                 if(nodes[11].number<=SERVERS){
                     multiService = getService(r);
-                    s = findOne(event, 30, 33);
+                    s = findOne(event, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
                     event[s].x = 1;
                 }
             }
-            else if (e==34) {
-                event[34].x=0;
+            else if (e==2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1) {
+                event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].x=0;
                 System.out.println("\n *** Sto processando un arrivo al controllo approfondito ***");
                 nodes[12].number++;
-                Block block=new Block(event[34]);
+                Block block=new Block(event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1]);
 
                 Queue_security1.enqueue(block.priority,block);  // enqueue the current arrival into the respective queue defined by 'priority'
                 if(nodes[12].number<=2){
                     Block pa=Queue_security1.dequeue(0);
                     multiService = getService(r);
-                    s = findOne(event, 35, 36);
+                    s = findOne(event, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
@@ -332,28 +333,28 @@ public class ModelloIniziale {
                 }
 
             }
-            else if(e==37){
-                event[37].x=0;
+            else if(e==2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+1){
+                event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+1].x=0;
                 System.out.println("\n *** Sto processando un arrivo all'imbarco FF***");
-                System.out.println("il tipo di passeggero è:"+event[37].priority);
+                System.out.println("il tipo di passeggero è:"+event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+1].priority);
                 nodes[13].number++;
                 if(nodes[13].number<=1){
 
                     multiService = getService(r);
 
-                    sum[39].service += multiService;
-                    sum[39].served++;
-                    event[39].t = t.current + multiService;
-                    event[39].x = 1;
+                    sum[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO].service += multiService;
+                    sum[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO].served++;
+                    event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO].t = t.current + multiService;
+                    event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO].x = 1;
 
                 }
             }
-            else if(e==38){
-                event[38].x=0;
+            else if(e==2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2){
+                event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2].x=0;
 
                 System.out.println("\n *** Sto processando un arrivo all'imbarco priority ***");
                 System.out.println("il tipo di passeggero è:"+event[38].priority);
-                Block block=new Block(event[38]);
+                Block block=new Block(event[2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2]);
                 if(block.priority==2){
                     Queue_imbarco1.enqueue(1, block);
                     number_queues[1]++;
@@ -374,7 +375,7 @@ public class ModelloIniziale {
                         number_queues[1]--;
                     }
                     multiService = getService(r);
-                    s = findOne(event, 40, 43);
+                    s = findOne(event, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO+1, 2+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+2+Values.SERVERS_IMBARCO_DEDICATO+2+Values.SERVERS_IMBARCO_DEDICATO+Values.SERVERS_IMBARCO_DEDICATO);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
@@ -387,14 +388,14 @@ public class ModelloIniziale {
                 index++;                                     /* from server s       */
                // number--;
                 s = e;
-                if (s >= 2 && s <= 2 + SERVERS - 1) {   /* nodo multiserver */
+                if (s >= 2 && s <= 2 + Values.SERVERS_BIGLIETTERIA - 1) {   /* nodo multiserver */
                     System.out.println("\n*** Sto processando una departure del server ***");
                     nodes[1].number--;
                     nodes[1].index++;
                     event[SERVERS+SERVERS_DEDICATO+2].x=1;
-                    event[7].t=t.current;
+                    event[ 2 + Values.SERVERS_BIGLIETTERIA +1].t=t.current;
 
-                    if (nodes[1].number >= SERVERS) {
+                    if (nodes[1].number >= Values.SERVERS_BIGLIETTERIA) {
                         multiService = getService(r);
                         sum[s].service += multiService;
                         sum[s].served++;
@@ -402,10 +403,10 @@ public class ModelloIniziale {
                     } else
                         event[s].x = 0;
                 }
-                else if ( s == 2 + SERVERS ) {
+                else if ( s == 2 + Values.SERVERS_BIGLIETTERIA ) {
                     System.out.println("\n*** Sto processando una departure del server dedicato***");
-                    event[SERVERS+SERVERS_DEDICATO+3].x=1;
-                    event[SERVERS+SERVERS_DEDICATO+3].t=t.current;
+                    event[ 3 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA].x=1;
+                    event[3 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA].t=t.current;
                     nodes[0].number--;
                     nodes[0].index++;
                     if (nodes[0].number >= 1) {
@@ -417,7 +418,7 @@ public class ModelloIniziale {
                         event[s].x = 0;
                     }
                 }
-                else if (s== 2 + SERVERS+SERVERS_DEDICATO+2) {
+                else if (s== 2 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2) {
                     System.out.println("\n*** Sto processando una departure del server check in dedicato***");
                     //number--;
                     nodes[2].number--;
@@ -436,7 +437,7 @@ public class ModelloIniziale {
                     }
 
                 }
-                else if(s>= 2 + SERVERS+SERVERS_DEDICATO+2+1 && s<= 2 + 2*SERVERS+2*SERVERS_DEDICATO+1){
+                else if(s>= 2 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+1 && s<= 2 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN){
                    // number--;
                     System.out.println("\n*** Sto processando una departure del server check in***");
                     nodes[3].number--;
@@ -444,7 +445,7 @@ public class ModelloIniziale {
                     int server=find_best_server();
                     event[server].x=1;
                     event[server].t=t.current;
-                    if (nodes[3].number >= SERVERS) {
+                    if (nodes[3].number >= Values.SERVERS_CHECK_IN) {
                         multiService = getService(r);
                         sum[s].service += multiService;
                         sum[s].served++;
