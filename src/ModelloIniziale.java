@@ -34,6 +34,10 @@ public class ModelloIniziale {
     static double STOP  = 10.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
+    static int b = 1024;
+    static int k = 64;
+    static double batchMeansSimulationRuns = b*k;
+
     static int SERVERS = 3;              /* number of servers */
     static int NODES = 2;
 

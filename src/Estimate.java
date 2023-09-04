@@ -45,8 +45,7 @@ public class Estimate{
 		StringTokenizer tokenizer = new StringTokenizer(line);
 		if(tokenizer.hasMoreTokens()){
 			System.out.println(tokenizer.nextToken());
-			//data = Double.parseDouble(tokenizer.nextToken());
-		    data = 3;
+			data = Double.parseDouble(tokenizer.nextToken());
 		    n++;                 /* and standard deviation        */
 			System.out.println(n);
 

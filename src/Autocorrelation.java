@@ -7,10 +7,10 @@ import java.util.StringTokenizer;
 
 public class Autocorrelation {
 
-    private static int batchSize = 32;
+    private static int batchSize = 256;
 
     public static void main(String args[]) throws IOException {
-        double[] data;
+        double[] data = {1.55859859, 1.084953838, 1.47836829, 1.093583748, 1.23245464, 1.12302934, 0.999778390, 1.234232245, 1.002324233, 1.12132342, 1.082939234, 1.1231434253, 1.343324131, 1.00093227382, 1.012131423, 1.21113223, 1.122324235, 1.05893002, 1.3434221, 1.322498889};
         String line1 = "";
         String line2 = "";
 
@@ -19,11 +19,11 @@ public class Autocorrelation {
             lags[l] = l;
         }
 
-        try {
+        /*try {
             BufferedReader br1 = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\prova.txt"));
             line1 = br1.readLine();
             int j = 0;
-            while (line1 != null) {        /* use Welford's one-pass method */
+            while (line1 != null) {
                 StringTokenizer tokenizer = new StringTokenizer(line1);
                 if (tokenizer.hasMoreTokens()) {
                     j++;
@@ -36,7 +36,7 @@ public class Autocorrelation {
             BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\prova.txt"));
             line2 = br.readLine();
             int q = 0;
-            while (line2 != null) {         /* use Welford's one-pass method */
+            while (line2 != null) {
                 StringTokenizer tokenizer = new StringTokenizer(line2);
                 if (tokenizer.hasMoreTokens()) {
                     data[q] = Double.parseDouble(tokenizer.nextToken());
@@ -44,8 +44,7 @@ public class Autocorrelation {
 
                 }
                 line2 = br.readLine();
-            }
-
+            }*/
 
             double[] autocorrelation = calculateAutocorrelation(data, batchSize);
             System.out.println("Batch size = " + batchSize);
@@ -106,10 +105,10 @@ public class Autocorrelation {
             for (double elem : acorr)
                 System.out.println(elem);*/
 
-        } catch (IOException e) {
+        /*} catch (Exception e) {
             System.err.println(e);
             System.exit(1);
-        }
+        }*/
 
     }
 
