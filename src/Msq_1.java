@@ -15,10 +15,12 @@
 import java.lang.*;
 
 
+
 class MsqT1 {
   double current;                   /* current time                       */
   double next;                      /* next (most imminent) event time    */
 }
+
 
 class MsqSum1 {                      /* accumulated sums of                */
   double service;                   /*   service times                    */

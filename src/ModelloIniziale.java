@@ -34,6 +34,7 @@ public class ModelloIniziale {
     static double STOP  = 200.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
+
     static int SERVERS = 4;              /* number of servers */
     static int NODES = 15;
     static int[] number_queues={0,0};
