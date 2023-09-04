@@ -15,17 +15,19 @@
 import java.lang.*;
 
 
-class MsqT_1 {
+
+class MsqT1 {
   double current;                   /* current time                       */
   double next;                      /* next (most imminent) event time    */
 }
 
-class MsqSum_1 {                      /* accumulated sums of                */
+
+class MsqSum1 {                      /* accumulated sums of                */
   double service;                   /*   service times                    */
   long   served;                    /*   number served                    */
 }
 
-class MsqEvent_1 {                     /* the next-event list    */
+class MsqEvent1{                     /* the next-event list    */
   double t;                         /*   next event time      */
   int    x;                         /*   event status, 0 or 1 */
 }
