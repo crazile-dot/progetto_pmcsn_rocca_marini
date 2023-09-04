@@ -29,16 +29,16 @@ class Area {
  */
 
 public class ModelloIniziale {
-
+    static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
-    static double STOP  = 10.0;          /* terminal (close the door) time */
+    static double STOP  = 200.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
-    static int SERVERS = 3;              /* number of servers */
-    static int NODES = 2;
-
+    static int SERVERS = 4;              /* number of servers */
+    static int NODES = 15;
+    static int[] number_queues={0,0};
     static double sarrival = START;
-
+    static  Node [] nodes = new Node [NODES];
     public static void main(String[] args) {
 
         long index = 0;                  /* used to count departed jobs         */
@@ -66,11 +66,11 @@ public class ModelloIniziale {
         //r.plantSeeds(987654321);
 
 
-        MsqEvent [] event = new MsqEvent [2 + SERVERS + 1];  /* tipologie di evento */
-        MsqSum [] sum = new MsqSum [2 + SERVERS + 1];
-        Node [] nodes = new Node [NODES];
+        MsqEvent [] event = new MsqEvent [2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30];  /* tipologie di evento */
+        MsqSum [] sum = new MsqSum [2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30];
+       // Node [] nodes = new Node [NODES];
         Area[] areas = new Area[NODES];
-        for (s = 0; s < 2 + SERVERS + 1; s++) {
+        for (s = 0; s <2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30; s++) {
             event[s] = new MsqEvent();
             sum [s]  = new MsqSum();
         }
@@ -89,27 +89,56 @@ public class ModelloIniziale {
         event[1].t = getArrival(r);
         event[1].x = 1;
 
-        for (n = 2; n < 2 + SERVERS + 1; n++) {
+        for (n = 2; n < 2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30; n++) {
             event[n].t = START;
             event[n].x = 0;
             sum[n].service = 0.0;
             sum[n].served = 0;
         }
-
+        MultiQueue Queue_security1=new MultiQueue(1);
+        MultiQueue Queue_imbarco1=new MultiQueue(2);
         int iteration = 0;
         while ((event[0].x != 0) || event[1].x != 0 || (number != 0)) {
+
             System.out.println("Lista eventi:\n");
             System.out.println("Stato evento arrivo N: " + event[0].x);
             System.out.println("Stato evento arrivo FF: " + event[1].x);
             System.out.println("Server 1: " + event[2].x);
             System.out.println("Server 2: " + event[3].x);
             System.out.println("Server 3: " + event[4].x);
-            System.out.println("Server 4 (FF): " + event[5].x);
-            System.out.println("Number nodo N: " + nodes[1].number);
-            System.out.println("Number nodo FF: " + nodes[0].number);
-            System.out.println("Coda nodo N: " + (nodes[1].number - event[2].x - event[3].x - event[4].x));
+            System.out.println("Server 4: " + event[5].x);
+            System.out.println("Server 5 (FF): " + event[6].x);
+           // System.out.println("Number nodo N: " + nodes[1].number);
+            //System.out.println("Number nodo FF: " + nodes[0].number);
+            System.out.println("Coda nodo N: " + (nodes[1].number - event[2].x - event[3].x - event[4].x-event[5].x));
             System.out.println("Coda nodo FF: " + (nodes[0].number - 1));
-
+            System.out.println("Server 1 check in: " + event[10].x);
+            System.out.println("Server 2 check in: " + event[11].x);
+            System.out.println("Server 3 check in: " + event[12].x);
+            System.out.println("Server 4 check in: " + event[13].x);
+            System.out.println("Server 5 check in (FF): " + event[9].x);
+            System.out.println("Coda nodo N: " + (nodes[3].number - event[10].x - event[11].x - event[12].x-event[13].x));
+            System.out.println("Coda nodo FF: " + (nodes[2].number - event[9].x));
+            System.out.println("Server 1 scansione carta d'imbarco: " + event[22].x);
+            System.out.println("Server 2 scansione carta d'imbarco: " + event[23].x);
+            System.out.println("Server 3 scansione carta d'imbarco: " + event[24].x);
+            System.out.println("Server 4 scansione carta d'imbarco: " + event[25].x);
+            System.out.println("Server 5 (FF) scansione carta d'imbarco: " + event[20].x);
+            System.out.println("Server 5 (FF) scansione carta d'imbarco: " + event[21].x);
+            System.out.println("Coda nodo N 1: " + (nodes[5].number - event[22].x ));
+            System.out.println("Coda nodo N 1: " + (nodes[6].number - event[23].x ));
+            System.out.println("Coda nodo N 1: " + (nodes[7].number - event[24].x ));
+            System.out.println("Coda nodo N 1: " + (nodes[8].number - event[25].x ));
+            System.out.println("Coda nodo FF: " + (nodes[4].number - event[20].x));
+            System.out.println("Coda nodo FF: " + (nodes[9].number - event[21].x));
+            System.out.println("Server 1 check in: " + event[40].x);
+            System.out.println("Server 2 check in: " + event[41].x);
+            System.out.println("Server 3 check in: " + event[42].x);
+            System.out.println("Server 4 check in: " + event[43].x);
+            System.out.println("Server 5 check in (FF): " + event[39].x);
+            System.out.println("Coda nodo N: " + (nodes[14].number - event[40].x - event[41].x - event[42].x-event[43].x));
+            System.out.println("Coda nodo FF: " + (nodes[13].number - event[39].x));
+            System.out.println(number);
             e = nextEvent(event);                     /* next event index */
             t.next = event[e].t;                        /* next event time  */
             area += (t.next - t.current) * number;      /* update integral  */
@@ -140,7 +169,7 @@ public class ModelloIniziale {
             if (e == 0 || e == 1) {
                 /* process an arrival*/
                 number++;
-
+                System.out.println("\n*** Sto Processando un arrivo ***");
                 if (e == 0) {
                     nodes[1].number++;
                 } else {
@@ -165,7 +194,15 @@ public class ModelloIniziale {
                         event[1].x = 0;
                     }
                 }
-                if (e == 0 && nodes[1].number <= SERVERS) {
+                if (e == 1 && nodes[0].number == 1) {
+
+                    singleService = ssq.getService(r);
+                    sum[6].service += singleService;
+                    sum[6].served++;
+                    event[6].t = t.current + singleService;
+                    event[6].x = 1;
+                }
+               else if (e == 0 && nodes[1].number <= SERVERS) {
                     multiService = getService(r);
                     s = findOne(event, 2, SERVERS + 2 - 1);
                     sum[s].service += multiService;
@@ -174,23 +211,188 @@ public class ModelloIniziale {
                     event[s].x = 1;
                 }
 
-                if (e == 1 && nodes[0].number == 1) {
 
+
+
+            }
+            else if(e==8){ /* server dedicato*/
+                event[8].x=0;
+                //number++;
+                nodes[2].number++;
+                //idx++????
+                if(nodes[2].number==1){
                     singleService = ssq.getService(r);
-                    sum[5].service += singleService;
-                    sum[5].served++;
-                    event[5].t = t.current + singleService;
-                    event[5].x = 1;
+                    sum[9].service += singleService;
+                    sum[9].served++;
+                    event[9].t = t.current + singleService;
+                    event[9].x = 1;
                 }
 
             }
+            else if(e==7){
+                event[7].x=0;
+               // number++;
+                nodes[3].number++;
+                //idx++????
+                if(nodes[3].number<=SERVERS){
+                    multiService = getService(r);
+                    s = findOne(event, 10, 13);
+                    sum[s].service += multiService;
+                    sum[s].served++;
+                    event[s].t = t.current + multiService;
+                    event[s].x = 1;
+                }
+            }
+            else if(e==15){
+                event[15].x=0;
+                //number++;
+                nodes[9].number++;
+                //idx++????
+                if(nodes[9].number==1){
+                    singleService = ssq.getService(r);
+                    sum[21].service += singleService;
+                    sum[21].served++;
+                    event[21].t = t.current + singleService;
+                    event[21].x = 1;
+                }
+            }
+            else if (e==14){
+                event[14].x=0;
+                //number++;
+                nodes[4].number++;
+                //idx++????
+                if(nodes[4].number==1){
+                    singleService = ssq.getService(r);
+                    sum[20].service += singleService;
+                    sum[20].served++;
+                    event[20].t = t.current + singleService;
+                    event[20].x = 1;
+                }
+            }
+            else if(e>=16 && e<=19){
+                event[e].x=0;
+                //number++;
+                int p=find_number_node(e);
+                nodes[p].number++;
+                //idx++????
+                if(nodes[p].number==1){
+                    singleService = ssq.getService(r);
+
+                    sum[e+SERVERS+SERVERS_DEDICATO*2].service += singleService;
+                    sum[e+SERVERS+SERVERS_DEDICATO*2].served++;
+                    event[e+SERVERS+SERVERS_DEDICATO*2].t = t.current + singleService;
+                    event[e+SERVERS+SERVERS_DEDICATO*2].x = 1;
+                }
+            }
+            else if (e==26){  /* servers prioritario secuirty*/
+                event[26].x=0;
+                // number++;
+                nodes[10].number++;
+                //idx++????
+                if(nodes[10].number<=2){
+                    multiService = getService(r);
+                    s = findOne(event, 28, 29);
+                    sum[s].service += multiService;
+                    sum[s].served++;
+                    event[s].t = t.current + multiService;
+                    event[s].x = 1;
+                }
+            }
+            else if(e==27){
+                event[27].x=0;
+                // number++;
+                nodes[11].number++;
+                //idx++????
+                if(nodes[11].number<=SERVERS){
+                    multiService = getService(r);
+                    s = findOne(event, 30, 33);
+                    sum[s].service += multiService;
+                    sum[s].served++;
+                    event[s].t = t.current + multiService;
+                    event[s].x = 1;
+                }
+            }
+            else if (e==34) {
+                event[34].x=0;
+                System.out.println("\n *** Sto processando un arrivo al controllo approfondito ***");
+                nodes[12].number++;
+                Block block=new Block(event[34]);
+
+                Queue_security1.enqueue(block.priority,block);  // enqueue the current arrival into the respective queue defined by 'priority'
+                if(nodes[12].number<=2){
+                    Block pa=Queue_security1.dequeue(0);
+                    multiService = getService(r);
+                    s = findOne(event, 35, 36);
+                    sum[s].service += multiService;
+                    sum[s].served++;
+                    event[s].t = t.current + multiService;
+                    event[s].x = 1;
+                    event[s].priority=pa.priority;
+                }
+
+            }
+            else if(e==37){
+                event[37].x=0;
+                System.out.println("\n *** Sto processando un arrivo all'imbarco FF***");
+                System.out.println("il tipo di passeggero è:"+event[37].priority);
+                nodes[13].number++;
+                if(nodes[13].number<=1){
+
+                    multiService = getService(r);
+
+                    sum[39].service += multiService;
+                    sum[39].served++;
+                    event[39].t = t.current + multiService;
+                    event[39].x = 1;
+
+                }
+            }
+            else if(e==38){
+                event[38].x=0;
+
+                System.out.println("\n *** Sto processando un arrivo all'imbarco priority ***");
+                System.out.println("il tipo di passeggero è:"+event[38].priority);
+                Block block=new Block(event[38]);
+                if(block.priority==2){
+                    Queue_imbarco1.enqueue(1, block);
+                    number_queues[1]++;
+                }
+                else{
+                    Queue_imbarco1.enqueue(block.priority, block);
+                    number_queues[0]++;
+                }
+
+                nodes[14].number++;
+                if(nodes[14].number<=SERVERS){
+                    if(block.priority==2){
+                        Block b=Queue_imbarco1.dequeue(1);
+                        number_queues[1]--;
+                    }
+                    else{
+                        Block b=Queue_imbarco1.dequeue(block.priority);
+                        number_queues[1]--;
+                    }
+                    multiService = getService(r);
+                    s = findOne(event, 40, 43);
+                    sum[s].service += multiService;
+                    sum[s].served++;
+                    event[s].t = t.current + multiService;
+                    event[s].x = 1;
+
+                }
+            }
+
             else {                                         /* process a departure */
                 index++;                                     /* from server s       */
-                number--;
+               // number--;
                 s = e;
                 if (s >= 2 && s <= 2 + SERVERS - 1) {   /* nodo multiserver */
+                    System.out.println("\n*** Sto processando una departure del server ***");
                     nodes[1].number--;
                     nodes[1].index++;
+                    event[SERVERS+SERVERS_DEDICATO+2].x=1;
+                    event[7].t=t.current;
+
                     if (nodes[1].number >= SERVERS) {
                         multiService = getService(r);
                         sum[s].service += multiService;
@@ -198,7 +400,11 @@ public class ModelloIniziale {
                         event[s].t = t.current + multiService;
                     } else
                         event[s].x = 0;
-                } else {
+                }
+                else if ( s == 2 + SERVERS ) {
+                    System.out.println("\n*** Sto processando una departure del server dedicato***");
+                    event[SERVERS+SERVERS_DEDICATO+3].x=1;
+                    event[SERVERS+SERVERS_DEDICATO+3].t=t.current;
                     nodes[0].number--;
                     nodes[0].index++;
                     if (nodes[0].number >= 1) {
@@ -209,6 +415,224 @@ public class ModelloIniziale {
                     } else {
                         event[s].x = 0;
                     }
+                }
+                else if (s== 2 + SERVERS+SERVERS_DEDICATO+2) {
+                    System.out.println("\n*** Sto processando una departure del server check in dedicato***");
+                    //number--;
+                    nodes[2].number--;
+                    nodes[2].index--;
+                    int k =find_best_server_dedicato();
+                    System.out.println("Ilnumero dell'evento è:"+k);
+                    event[k].x=1;
+                    event[k].t=t.current;
+                    if (nodes[2].number >= 1) {
+                        singleService = ssq.getService(r);
+                        sum[s].service += singleService;
+                        sum[s].served++;
+                        event[s].t = t.current + singleService;
+                    } else {
+                        event[s].x = 0;
+                    }
+
+                }
+                else if(s>= 2 + SERVERS+SERVERS_DEDICATO+2+1 && s<= 2 + 2*SERVERS+2*SERVERS_DEDICATO+1){
+                   // number--;
+                    System.out.println("\n*** Sto processando una departure del server check in***");
+                    nodes[3].number--;
+                    nodes[3].index--;
+                    int server=find_best_server();
+                    event[server].x=1;
+                    event[server].t=t.current;
+                    if (nodes[3].number >= SERVERS) {
+                        multiService = getService(r);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if(e==20 ){
+                   // number--;
+                    System.out.println("\n*** Sto processando una departure del server dedicato carta imbarco***");
+                    event[26].x=1;
+                    event[26].t=t.current;
+                    nodes[4].number--;
+                    nodes[4].index--;
+                    if (nodes[4].number >= 1) {
+                        singleService = ssq.getService(r);
+                        sum[s].service += singleService;
+                        sum[s].served++;
+                        event[s].t = t.current + singleService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if(e==21){
+                   // number--;
+                    event[26].x=1;
+                    event[26].t=t.current;
+                    System.out.println("\n*** Sto processando una departure del server dedicato carta imbarco***");
+                    nodes[9].number--;
+                    nodes[9].index--;
+                    if (nodes[9].number >= 1) {
+                        singleService = ssq.getService(r);
+                        sum[s].service += singleService;
+                        sum[s].served++;
+                        event[s].t = t.current + singleService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+
+                else if(e>=22 && e<=25){
+                    event[27].x=1;
+                    event[27].t=t.current;
+                    System.out.println("\n*** Sto processando una departure del server  carta imbarco***");
+                   // number--;
+                    int nu=find_number_node(e);
+                    nodes[nu].number--;
+                    nodes[nu].index++;
+                    if (nodes[nu].number >= 1) {
+                        singleService = ssq.getService(r);
+                        sum[s].service += singleService;
+                        sum[s].served++;
+                        event[s].t = t.current + singleService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if (e==28 || e==29){
+                   //  number--;
+                    System.out.println("\n*** Sto processando una departure del server dedicato security**");
+                    nodes[10].number--;
+                    nodes[10].index--;
+                    r.selectStream(10 + idx);
+                    idx++;
+                    rnd = r.random();
+                    if(rnd>0.50){
+                        event[34].x=1;
+                        event[34].t=t.current;
+                        event[34].priority=1;
+                    }
+                    else {
+                        event[37].x=1;
+                        event[37].t=t.current;
+
+                    }
+                    if (nodes[10].number >= 2) {
+                        multiService = getService(r);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if(e>=30 && e<=33){
+                     //number--;
+                    System.out.println("\n*** Sto processando una departure del server security***");
+                    nodes[11].number--;
+                    nodes[11].index--;
+                    r.selectStream(10 + idx);
+                    idx++;
+                    rnd = r.random();
+                    if(rnd>0.50){
+                        event[34].x=1;
+                        event[34].t=t.current;
+                        event[34].priority=0;
+                    }
+                    else {
+                        r.selectStream(10 + idx);
+                        idx++;
+                        rnd = r.random();
+
+                        if(rnd>0.50) {
+                            event[38].x = 1;
+                            event[38].t = t.current;
+                            event[38].priority=2;
+                        }
+                        else{
+                            event[38].x = 1;
+                            event[38].t = t.current;
+                            event[38].priority=2;
+                        }
+
+                    }
+
+                    if (nodes[11].number >= SERVERS) {
+                        multiService = getService(r);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if (e==35 || e==36){
+                    number--;
+                    System.out.println("\n*** Sto processando una departure del server controllo approfondito***");
+                    nodes[12].number--;
+                    nodes[12].index--;
+
+
+                    if (nodes[12].number >= 2) {
+                        multiService = getService(r);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if (e==39){
+                    System.out.println("\n*** Sto processando una departure del server  dedicato imbarco***");
+                    number--;
+
+                    nodes[13].number--;
+                    nodes[13].index++;
+                    if (nodes[13].number >= 1) {
+                        singleService = ssq.getService(r);
+                        sum[s].service += singleService;
+                        sum[s].served++;
+                        event[s].t = t.current + singleService;
+                    } else {
+                        event[s].x = 0;
+                    }
+                }
+                else if(e>=40 && e<=43){
+                    System.out.println("\n*** Sto processando una departure del server imbarco***");
+                    number--;
+
+                    nodes[14].number--;
+                    nodes[14].index++;
+                    if (nodes[14].number >= SERVERS) {
+                        if(number_queues[1]>0){
+                            Block block = new Block(Queue_imbarco1.dequeue(1));
+                            singleService = ssq.getService(r);
+                            sum[s].service += singleService;
+                            sum[s].served++;
+                            event[s].t = t.current + singleService;
+                            event[s].priority= block.priority;
+                            event[s].passenger_type= block.type;
+                            number_queues[1] -= 1;
+                        }
+                        else if(number_queues[0]>0){
+                            Block block = new Block(Queue_imbarco1.dequeue(0));
+                            singleService = ssq.getService(r);
+                            sum[s].service += singleService;
+                            sum[s].served++;
+                            event[s].t = t.current + singleService;
+                            number_queues[0] -= 1;
+                        }
+
+                    }
+                    else {
+                        event[s].x = 0;
+                        }
+                }
+                else{
+                    event[s].x = 0;
                 }
             }
 
@@ -305,7 +729,7 @@ public class ModelloIniziale {
         while (event[i].x == 0)       /* find the index of the first 'active' */
             i++;                        /* element in the event list            */
         e = i;
-        while (i < SERVERS + 2) {         /* now, check the others to find which  */
+        while (i < 46) {         /* now, check the others to find which  */
             i++;                          /* event type is most imminent          */
             if ((event[i].x == 1) && (event[i].t < event[e].t))
                 e = i;
@@ -331,7 +755,22 @@ public class ModelloIniziale {
         }
         return (s);
     }
+    public static int find_number_node(int e){
+        if (e==16 || e==22){
+            return 5;
+        }
+        if(e==17 || e==23){
+            return 6;
+        }
+        if(e==18 || e==24){
+            return 7;
 
+        }
+        if(e==19 || e==25){
+            return 8;
+        }
+        return 10000;
+    }
     public static int findOne(MsqEvent [] event, int min, int max) {
 
         /* -----------------------------------------------------
@@ -350,6 +789,36 @@ public class ModelloIniziale {
                 s = i;
         }
         return (s);
+    }
+    public static int find_best_server_dedicato(){
+
+        if(nodes[4].number<=nodes[9].number){
+            return 14;
+        }
+        return 15;
+    }
+    public static int find_best_server(){
+        int i=5;
+        int current=5;
+        while (i<8){
+            if (nodes[i].number>nodes[i+1].number){
+                current=i+1;
+            }
+            i++;
+        }
+        if(current==5){
+            current=16;
+        }
+        if(current==6){
+            current=17;
+        }
+        if(current==7){
+            current=18;
+        }
+        if(current==8){
+            current=19;
+        }
+        return current;
     }
 
 }
