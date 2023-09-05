@@ -29,10 +29,15 @@ class Area {
  */
 
 public class ModelloIniziale {
+
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
     static double STOP  = 200.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
+
+    static double LAMBDA;
+    static double SERVICE;
+    static double fasciaOraria = Utils.fasciaOraria1;
 
 
     static int SERVERS = 4;              /* number of servers */
@@ -40,6 +45,7 @@ public class ModelloIniziale {
     static int[] number_queues={0,0};
     static double sarrival = START;
     static  Node [] nodes = new Node [NODES];
+
     public static void main(String[] args) {
 
         long index = 0;                  /* used to count departed jobs         */
@@ -85,9 +91,9 @@ public class ModelloIniziale {
 
         /* inizializzazione del primo arrivo */
         t.current = START;
-        event[0].t = getArrival(r);
+        event[0].t = getArrivalN(r);
         event[0].x = 1;
-        event[1].t = getArrival(r);
+        event[1].t = getArrivalFF(r);
         event[1].x = 1;
 
         for (n = 2; n < 2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30; n++) {
@@ -177,19 +183,19 @@ public class ModelloIniziale {
                     nodes[0].number++;
                 }
 
-                r.selectStream(10 + idx);
+                /*r.selectStream(10 + idx);
                 idx++;
-                rnd = r.random();
+                rnd = r.random();*/
 
-                if (rnd > 0.2305) {
-                    event[0].t = getArrival(r);
+                if (e == 0) {
+                    event[0].t = getArrivalN(r);
                     //System.out.println("Primo arrivo normale: " + event[0].t);
                     if (event[0].t > STOP){
                         event[0].x = 0;
                     }
 
-                } else {
-                    event[1].t = getArrival(r);
+                } else if (e == 1){
+                    event[1].t = getArrivalFF(r);
                     //System.out.println("Primo arrivo ff: " + event[1].t);
                     if (event[1].t > STOP) {
                         event[1].x = 0;
@@ -691,24 +697,74 @@ public class ModelloIniziale {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    public static double uniform(double a, double b, Rngs_1 r) {
-        /* ------------------------------------------------
-         * generate an Uniform random variate, use a < b
-         * ------------------------------------------------
-         */
-        return (a + (b - a) * r.random());
-    }
-
-    public static double getArrival(Rngs_1 r) {
+    public static double getArrivalFF(Rngs_1 r) {
         /* --------------------------------------------------------------
          * generate the next arrival time, with rate 1/2
          * --------------------------------------------------------------
          */
+        double perc = Utils.FFPercentage;
+        return getArrival(perc, r);
+    }
+
+    public static double getArrival(double perc, Rngs_1 r) {
+
+        if (fasciaOraria == Utils.fasciaOraria1)
+            LAMBDA = Utils.arrivalFascia1 * perc;
+        if (fasciaOraria == Utils.fasciaOraria2)
+            LAMBDA = Utils.arrivalFascia2 * perc;
+        if (fasciaOraria == Utils.fasciaOraria3)
+            LAMBDA = Utils.arrivalFascia3 * perc;
+        if (fasciaOraria == Utils.fasciaOraria4)
+            LAMBDA = Utils.arrivalFascia4 * perc;
+        if (fasciaOraria == Utils.fasciaOraria5)
+            LAMBDA = Utils.arrivalFascia5 * perc;
+
         r.selectStream(0);
-        sarrival += exponential(2.0, r);
+        sarrival += exponential(LAMBDA, r);
         return (ModelloIniziale.sarrival);
     }
 
+
+    public static double getArrivalN(Rngs_1 r) {
+        /* --------------------------------------------------------------
+         * generate the next arrival time, with rate 1/2
+         * --------------------------------------------------------------
+         */
+
+        double perc = Utils.NPercentage;
+        return getArrival(perc, r);
+    }
+
+
+    public static void getServiceBigl(Rngs_1 r) {
+        SERVICE = Utils.biglService;
+        getService(r);
+    }
+
+    public static void getServiceChk(Rngs_1 r) {
+        SERVICE = Utils.chckinService;
+        getService(r);
+    }
+
+    public static void getServiceScann(Rngs_1 r) {
+        SERVICE = Utils.scannService;
+        getService(r);
+    }
+
+    public static void getServiceSec(Rngs_1 r) {
+        SERVICE = Utils.securService;
+        getService(r);
+    }
+
+    public static void getServiceSec2(Rngs_1 r) {
+        SERVICE = Utils.secur2Service;
+        getService(r);
+    }
+
+    public static void getServiceGate(Rngs_1 r) {
+        SERVICE = Utils.gateService;
+        getService(r);
+    }
 
     public static double getService(Rngs_1 r) {
         /* ------------------------------
@@ -716,7 +772,7 @@ public class ModelloIniziale {
          * ------------------------------
          */
         r.selectStream(1);
-        return (uniform(2.0, 10.0, r));
+        return (exponential(SERVICE, r));
     }
 
     public static int nextEvent(MsqEvent [] event) {
