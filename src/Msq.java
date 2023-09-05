@@ -26,6 +26,11 @@ class Msq {
     static double START   = 0.0;            /* initial (open the door)        */
     static double STOP    = 20000.0;        /* terminal (close the door) time  20000.0; */
     static int    SERVERS = 4;              /* number of servers              */
+
+    static double LAMBDA;
+    static double SERVICE = 2;
+    static double fasciaOraria = MMValues.fasciaOraria3;
+
     static int SERVER_DEDICATO=1; /* SERVER DEDICATO per i frequent flyers */
     static double sarrival = START;
     static int[] number_queues={0,0};
@@ -81,7 +86,7 @@ class Msq {
         MsqT t = new MsqT();
 
         t.current    = START;
-        event[0].t   = m.getArrival(r);
+        event[0].t   = getArrival(r);
         event[0].x   = 1;
         for (s = 1; s <= 38; s++) {
             event[s].t     = START;          /* this value is arbitrary because */
@@ -213,14 +218,14 @@ class Msq {
                 number_queues[event[0].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
                 number++; // incremento numero dei job nel sistema
                 number_nodes[0]++;
-                event[0].t        = m.getArrival(r);
+                event[0].t        = getArrival(r);
                 if (event[0].t > STOP)
                     event[0].x      = 0;
                 if (number_nodes[0] <= SERVERS+SERVER_DEDICATO) {
                     if (block.priority==1 && event[5].x==0){
                         areaBiglietteriaDedicata     += (t.next - t.current) * number;
                         Block passenger_served = Queues.dequeue(block.priority);
-                        service         = m.getService(r);
+                        service         = getService(r);
                         sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO].service += service;
                         sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO].served++;
                         event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO].t      = t.current + service;
@@ -240,7 +245,7 @@ class Msq {
                         if( l==1 ){
                             System.out.println("\n***sono dentro else***");
                             Block passenger_served = Queues.dequeue(block.priority);
-                            service = m.getService(r);
+                            service = getService(r);
                             s = m.findOne(event);
                             sum[s].service += service;
                             sum[s].served++;
@@ -267,7 +272,7 @@ class Msq {
                 if (number_nodes[1] <= MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO) {
                     if (block.priority==1 && event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].x==0){
                         Block passenger_served = Queues_checkin.dequeue(block.priority);
-                        service         = m.getService(r);
+                        service         = getService(r);
                         sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].service += service;
                         sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].served++;
                         event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].t      = t.current + service;
@@ -287,7 +292,7 @@ class Msq {
                         if( l==1 ){
                             System.out.println("\n***sono dentro else***");
                             Block passenger_served = Queues_checkin.dequeue(block.priority);
-                            service = m.getService(r);
+                            service = getService(r);
                             s = m.findOne_check_in(event);
                             sum[s].service += service;
                             sum[s].served++;
@@ -317,7 +322,7 @@ class Msq {
                     if( event[e].x==0  ){
 
 
-                        service = m.getService(r);
+                        service = getService(r);
                         s = m.findOne_controllo(e);
                         sum[s].service += service;
                         sum[s].served++;
@@ -346,7 +351,7 @@ class Msq {
                     if( event[e].x==0  ){
 
 
-                        service = m.getService(r);
+                        service = getService(r);
                         s = m.findOne_controllo(e);
                         sum[s].service += service;
                         sum[s].served++;
@@ -379,7 +384,7 @@ class Msq {
                     }
                     if (block.priority==1 && l==1){
                         Block passenger_served = Queues_security.dequeue(block.priority);
-                        service         = m.getService(r);
+                        service         = getService(r);
                         s=findOne(event,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+1,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO);
                         sum[s].service += service;
                         sum[s].served++;
@@ -988,7 +993,7 @@ class Msq {
     }
 
 
-    double exponential(double m, Rngs r) {
+    public static double exponential(double m, Rngs r) {
         /* ---------------------------------------------------
          * generate an Exponential random variate, use m > 0.0
          * ---------------------------------------------------
@@ -1004,25 +1009,64 @@ class Msq {
         return (a + (b - a) * r.random());
     }
 
-    double getArrival(Rngs r) {
-        /* --------------------------------------------------------------
-         * generate the next arrival time, with rate 1/2
-         * --------------------------------------------------------------
-         */
+    public static double getArrival(Rngs r) {
+
+        if (fasciaOraria == MMValues.fasciaOraria1)
+            LAMBDA = MMValues.arrivalFascia1;
+        if (fasciaOraria == MMValues.fasciaOraria2)
+            LAMBDA = MMValues.arrivalFascia2;
+        if (fasciaOraria == MMValues.fasciaOraria3)
+            LAMBDA = MMValues.arrivalFascia3;
+        if (fasciaOraria == MMValues.fasciaOraria4)
+            LAMBDA = MMValues.arrivalFascia4;
+        if (fasciaOraria == MMValues.fasciaOraria5)
+            LAMBDA = MMValues.arrivalFascia5;
+
         r.selectStream(0);
-        sarrival += exponential(2.0, r);
+        sarrival += exponential(LAMBDA, r);
         return (sarrival);
     }
 
 
-    double getService(Rngs r) {
+    public static void getServiceBigl(Rngs r) {
+        SERVICE = MMValues.biglService;
+        getService(r);
+    }
+
+    public static void getServiceChk(Rngs r) {
+        SERVICE = MMValues.chckinService;
+        getService(r);
+    }
+
+    public static void getServiceScann(Rngs r) {
+        SERVICE = MMValues.scannService;
+        getService(r);
+    }
+
+    public static void getServiceSec(Rngs r) {
+        SERVICE = MMValues.securService;
+        getService(r);
+    }
+
+    public static void getServiceSec2(Rngs r) {
+        SERVICE = MMValues.secur2Service;
+        getService(r);
+    }
+
+    public static void getServiceGate(Rngs r) {
+        SERVICE = MMValues.gateService;
+        getService(r);
+    }
+
+    public static double getService(Rngs r) {
         /* ------------------------------
          * generate the next service time, with rate 1/6
          * ------------------------------
          */
         r.selectStream(1);
-        return (uniform(2.0, 10.0, r));
+        return (exponential(SERVICE, r));
     }
+
 
     int nextEvent(MsqEvent [] event) {
         /* ---------------------------------------
