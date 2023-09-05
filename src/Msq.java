@@ -21,7 +21,7 @@ class MsqEvent{                     /* the next-event list    */
 
 class Msq {
     static double START   = 0.0;            /* initial (open the door)        */
-    static double STOP    = 10.0;        /* terminal (close the door) time  20000.0; */
+    static double STOP    = 20000.0;        /* terminal (close the door) time  20000.0; */
     static int    SERVERS = 4;              /* number of servers              */
     static int SERVER_DEDICATO=1; /* SERVER DEDICATO per i frequent flyers */
     static double sarrival = START;
@@ -72,13 +72,7 @@ class Msq {
         MultiQueue Queues_imbarco=new MultiQueue(3);
         MultiQueue Queues_security_app=new MultiQueue(1);
         while ((event[0].x != 0) || (number != 0)) {
-            /*System.out.println("lista eventi:\nstato evento arrivo:"+event[0].x+"\nstato server 1:"+event[1].x+"\nstato server 2:"+event[2].x+"\nstato server 3:"+event[3].x+"\nstato server 4 :"+event[4].x+"\nstato server dedicato 5:"+event[5].x+"\nstato arrivi al check in:"+event[6].x+"\nstato server check in 1:"+event[7].x+"\nstato server 2 check in :"+event[8].x+"\nstato server 3 check in:"+event[9].x+"\nstato server 4 check in:"+event[10].x+"\nstato server dedicato check in 5:"+event[11].x);
-            System.out.println("Il corrente stato delle due code è: \n coda frequent flyer="+number_queues[1]+ "\n coda passeggeri normali="+ number_queues[0]+"\ncoda passeggeri normali checkin="+number_queues_checkin[0]+"\ncoda passeggeri normali checkin="+number_queues_checkin[1]+"\ncoda passeggeri normali carta imbarco="+(number_nodes[2]-1)+"\ncoda passeggeri normali carta imbarco="+(number_nodes[3]-1)+"\ncoda passeggeri normali carta imbarco="+(number_nodes[4]-1)+"\ncoda passeggeri normali carta imbarco="+(number_nodes[5]-1)+"\ncoda passeggeri ff 1 carta imbarco="+(number_nodes[5]-1)+"\ncoda passeggeri ff 2 imbarco="+(number_nodes[5]-1));
-            System.out.println("\n"+number);
-            System.out.println("lista eventi:\nstato evento arrivo security:"+event[25].x+"\nstato server 1:"+event[26].x+"\nstato server 1:"+event[27].x+"\nstato server 1:"+event[28].x+"\nstato server 1:"+event[29].x+"\nstato server 1:"+event[30].x);
-            System.out.println("Il corrente stato delle due code è: \n coda frequent flyer security ="+number_queues_security[1]+ "\n coda passeggeri normali="+ number_queues_security[0]);*/
-            System.out.println("\narrivo imbarco :"+event[32].x+"\nstato server 1:"+event[33].x+"\nstato server 2:"+event[34].x+"\nstato server 3:"+event[35].x+"\nstato server 4:"+event[36].x+"\nstato server dedicato:"+event[37].x);
-            System.out.println("\ncoda ff:"+number_queues_imbarco[1]+"\ncoda N prioritaria:"+number_queues_imbarco[2]+"\n coda N:"+number_queues_imbarco[0]);
+
             e         = m.nextEvent(event);                /* next event index */
 
             t.next    = event[e].t;                         /* next event time  */
