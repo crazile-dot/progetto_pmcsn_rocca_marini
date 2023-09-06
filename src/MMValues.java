@@ -39,6 +39,7 @@ public class MMValues {
     public static double onlineChkinNPercentage = 0.5135;
     public static double noChkinFFPercentage = 0.0735;
     public static double noChkinNPercentage = 0.2765;
+    public static double singleCompanyPerc = 0.01;
 
     public static double firstClassGatePercentage = 0.4;
     public static double secondClassGatePercentage = 0.6;
