@@ -21,12 +21,8 @@ class Area {
 
 /*
     COSE DA RIVEDERE:
-    - distribuzione tempi di arrivo e di servizio: tipo di distribuzione e valori dei parametri
     - generazione valore randomico per la scelta del nodo: modalità e valori, avanzamento del seed (idx)
-    - cambiare NODES come valore della lista perché se non è 2 sfaciola
-    - sostituire i numeri che indicizzano gli eventi con le variabili
     - aggiungere gestione fasce orarie (cambia il LAMBDA)
-    - DA RICORDARE: il primo evento è l'arrivo al nodo 1, il secondo è l'arrivo al nodo 0, poi gli m server e poi il single server
  */
 
 public class ModelloIniziale {
