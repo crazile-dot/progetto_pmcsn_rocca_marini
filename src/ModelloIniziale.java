@@ -21,12 +21,8 @@ class Area {
 
 /*
     COSE DA RIVEDERE:
-    - distribuzione tempi di arrivo e di servizio: tipo di distribuzione e valori dei parametri
     - generazione valore randomico per la scelta del nodo: modalità e valori, avanzamento del seed (idx)
-    - cambiare NODES come valore della lista perché se non è 2 sfaciola
-    - sostituire i numeri che indicizzano gli eventi con le variabili
     - aggiungere gestione fasce orarie (cambia il LAMBDA)
-    - DA RICORDARE: il primo evento è l'arrivo al nodo 1, il secondo è l'arrivo al nodo 0, poi gli m server e poi il single server
  */
 
 public class ModelloIniziale {
@@ -35,6 +31,9 @@ public class ModelloIniziale {
     static double STOP  = 200.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
+    static double LAMBDA;
+    static double SERVICE = 2;
+    static double fasciaOraria = MMValues.fasciaOraria1;
 
     static int SERVERS = 4;              /* number of servers */
     static int NODES = 15;
@@ -48,7 +47,7 @@ public class ModelloIniziale {
 
         int idx = 1;
 
-        Rngs_1 r = new Rngs_1();
+        Rngs r = new Rngs();
         r.plantSeeds(123456789);
 
 
@@ -62,11 +61,6 @@ public class ModelloIniziale {
         double singleService;
 
         double rnd = 0.0;
-
-        //Msq m = new Msq();
-        Ssq3 ssq = new Ssq3();
-        //r.plantSeeds(987654321);
-
 
         MsqEvent [] event = new MsqEvent [2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30];  /* tipologie di evento */
         MsqSum [] sum = new MsqSum [2 + SERVERS + SERVERS_DEDICATO+SERVERS+SERVERS_DEDICATO+2+2*SERVERS+2*SERVERS_DEDICATO+SERVERS+30];
@@ -198,7 +192,7 @@ public class ModelloIniziale {
                 }
                 if (e == Values.SERVERS_DEDICATO_BIGLIETTERIA && nodes[0].number == 1) {
 
-                    singleService = ssq.getService(r);
+                    singleService = getService(r);
                     sum[6].service += singleService;
                     sum[6].served++;
                     event[6].t = t.current + singleService;
@@ -223,7 +217,7 @@ public class ModelloIniziale {
                 nodes[2].number++;
                 //idx++????
                 if(nodes[2].number==1){
-                    singleService = ssq.getService(r);
+                    singleService = getService(r);
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].service += singleService;
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].served++;
                     event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN].t = t.current + singleService;
@@ -251,7 +245,7 @@ public class ModelloIniziale {
                 nodes[9].number++;
                 //idx++????
                 if(nodes[9].number==1){
-                    singleService = ssq.getService(r);
+                    singleService = getService(r);
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service += singleService;
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].served++;
                     event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].t = t.current + singleService;
@@ -264,7 +258,7 @@ public class ModelloIniziale {
                 nodes[4].number++;
                 //idx++????
                 if(nodes[4].number==1){
-                    singleService = ssq.getService(r);
+                    singleService = getService(r);
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].service += singleService;
                     sum[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].served++;
                     event[2+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+1+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].t = t.current + singleService;
@@ -278,7 +272,7 @@ public class ModelloIniziale {
                 nodes[p].number++;
                 //idx++????
                 if(nodes[p].number==1){
-                    singleService = ssq.getService(r);
+                    singleService = getService(r);
 
                     sum[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service += singleService;
                     sum[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].served++;
@@ -410,7 +404,7 @@ public class ModelloIniziale {
                     nodes[0].number--;
                     nodes[0].index++;
                     if (nodes[0].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -428,7 +422,7 @@ public class ModelloIniziale {
                     event[k].x=1;
                     event[k].t=t.current;
                     if (nodes[2].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -462,7 +456,7 @@ public class ModelloIniziale {
                     nodes[4].number--;
                     nodes[4].index--;
                     if (nodes[4].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -478,7 +472,7 @@ public class ModelloIniziale {
                     nodes[9].number--;
                     nodes[9].index--;
                     if (nodes[9].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -496,7 +490,7 @@ public class ModelloIniziale {
                     nodes[nu].number--;
                     nodes[nu].index++;
                     if (nodes[nu].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -594,7 +588,7 @@ public class ModelloIniziale {
                     nodes[13].number--;
                     nodes[13].index++;
                     if (nodes[13].number >= 1) {
-                        singleService = ssq.getService(r);
+                        singleService = getService(r);
                         sum[s].service += singleService;
                         sum[s].served++;
                         event[s].t = t.current + singleService;
@@ -611,7 +605,7 @@ public class ModelloIniziale {
                     if (nodes[14].number >= SERVERS) {
                         if(number_queues[1]>0){
                             Block block = new Block(Queue_imbarco1.dequeue(1));
-                            singleService = ssq.getService(r);
+                            singleService = getService(r);
                             sum[s].service += singleService;
                             sum[s].served++;
                             event[s].t = t.current + singleService;
@@ -621,7 +615,7 @@ public class ModelloIniziale {
                         }
                         else if(number_queues[0]>0){
                             Block block = new Block(Queue_imbarco1.dequeue(0));
-                            singleService = ssq.getService(r);
+                            singleService = getService(r);
                             sum[s].service += singleService;
                             sum[s].served++;
                             event[s].t = t.current + singleService;
@@ -684,7 +678,7 @@ public class ModelloIniziale {
     } */
 
 
-    public static double exponential(double m, Rngs_1 r) {
+    public static double exponential(double m, Rngs r) {
         /* ---------------------------------------------------
          * generate an Exponential random variate, use m > 0.0
          * ---------------------------------------------------
@@ -692,7 +686,7 @@ public class ModelloIniziale {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    public static double uniform(double a, double b, Rngs_1 r) {
+    public static double uniform(double a, double b, Rngs r) {
         /* ------------------------------------------------
          * generate an Uniform random variate, use a < b
          * ------------------------------------------------
@@ -700,25 +694,63 @@ public class ModelloIniziale {
         return (a + (b - a) * r.random());
     }
 
-    public static double getArrival(Rngs_1 r) {
-        /* --------------------------------------------------------------
-         * generate the next arrival time, with rate 1/2
-         * --------------------------------------------------------------
-         */
+    public static double getArrival(Rngs r) {
+
+        if (fasciaOraria == MMValues.fasciaOraria1)
+            LAMBDA = MMValues.arrivalFascia1;
+        if (fasciaOraria == MMValues.fasciaOraria2)
+            LAMBDA = MMValues.arrivalFascia2;
+        if (fasciaOraria == MMValues.fasciaOraria3)
+            LAMBDA = MMValues.arrivalFascia3;
+        if (fasciaOraria == MMValues.fasciaOraria4)
+            LAMBDA = MMValues.arrivalFascia4;
+        if (fasciaOraria == MMValues.fasciaOraria5)
+            LAMBDA = MMValues.arrivalFascia5;
+
         r.selectStream(0);
-        sarrival += exponential(2.0, r);
+        sarrival += exponential(LAMBDA, r);
         return (ModelloIniziale.sarrival);
     }
 
+    public static void getServiceBigl(Rngs r) {
+        SERVICE = MMValues.biglService;
+        getService(r);
+    }
 
-    public static double getService(Rngs_1 r) {
+    public static void getServiceChk(Rngs r) {
+        SERVICE = MMValues.chckinService;
+        getService(r);
+    }
+
+    public static void getServiceScann(Rngs r) {
+        SERVICE = MMValues.scannService;
+        getService(r);
+    }
+
+    public static void getServiceSec(Rngs r) {
+        SERVICE = MMValues.securService;
+        getService(r);
+    }
+
+    public static void getServiceSec2(Rngs r) {
+        SERVICE = MMValues.secur2Service;
+        getService(r);
+    }
+
+    public static void getServiceGate(Rngs r) {
+        SERVICE = MMValues.gateService;
+        getService(r);
+    }
+
+    public static double getService(Rngs r) {
         /* ------------------------------
          * generate the next service time, with rate 1/6
          * ------------------------------
          */
         r.selectStream(1);
-        return (uniform(2.0, 10.0, r));
+        return (exponential(SERVICE, r));
     }
+
 
     public static int nextEvent(MsqEvent [] event) {
         /* ---------------------------------------
