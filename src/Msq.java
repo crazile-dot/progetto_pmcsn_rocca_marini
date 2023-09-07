@@ -276,7 +276,7 @@ class Msq {
                         event[i].priority = 0;
                         event[i].passenger_type = 0;
                     } else {
-                        int i = find_best_node();
+                        int i = findOne_controllo_dedicato();
                         event[i].x = 1;
                         event[i].t = t.current;
                         event[i].priority = 1;
@@ -298,7 +298,7 @@ class Msq {
                                 event[i].priority = 0;
                                 event[i].passenger_type = 0;
                             } else {
-                                int i = find_best_node();
+                                int i = findOne_controllo_dedicato();
                                 event[i].x = 1;
                                 event[i].t = t.current;
                                 event[i].priority = 1;
@@ -977,6 +977,7 @@ class Msq {
                 else if(s>=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1 && s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO){
                     number--;
                     number_nodes[9]--;
+                    System.out.println("******Sto processando una departure dal server dedicato********");
                     if(number_queues_imbarco[1]>MMValues.SERVER_IMBARCO_DEDICATO ) {
 
                         Block block = new Block(Queues_imbarco.dequeue(1));
@@ -996,6 +997,7 @@ class Msq {
                 else if(s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1+MMValues.SERVER_IMBARCO_DEDICATO){
 //38
                     number_nodes[10]--;
+                    System.out.println("*******Sto processando una departure dal server Controllo approfondito*********");
                     r.selectStream(0 );
                     double rnd = r.random();
                     if (rnd>0.70){
@@ -1015,7 +1017,7 @@ class Msq {
                         sum[s].served++;
                         event[s].t = t.current + service;
                         event[s].priority= block.priority;
-                        event[s].passenger_type= 0;
+                        event[s].passenger_type= block.priority;
                         number_queues_security_app -= 1;
                     }
                     else {
@@ -1073,7 +1075,7 @@ class Msq {
 
     private static int findOne_controllo_dedicato() {
         int i=1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
-        int current=16;
+        int current=1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
 
         if (number_nodes[findNode(current)]>number_nodes[findNode(i+1)]){
             current=i+1;
