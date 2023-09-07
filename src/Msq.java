@@ -266,7 +266,7 @@ class Msq {
                 r.selectStream(10);
                 double rndComp = r.random();
                 System.out.println("Valore Random company: " + rndComp);
-                if (rndComp > MMValues.singleCompanyPerc) {
+                /*if (rndComp > MMValues.singleCompanyPerc) {
                     r.selectStream(2);
                     double rndFF = r.random();
                     if (rndFF > MMValues.FFPercentage) {
@@ -282,7 +282,7 @@ class Msq {
                         event[i].priority = 1;
                         event[i].passenger_type = 1;
                     }
-                } else {
+                } else {*/
                     r.selectStream(4);
                     double rndB = r.random();
                     if (rndB > MMValues.noTktNPercentage + MMValues.noTktFFPercentage) {
@@ -383,15 +383,15 @@ class Msq {
                             }
                         }
                     }
-                }
+                //}
             } else if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1){ /* process an arrival at check-in*/
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].x=0; //6
                 System.out.println("\n *** Sto processando un arrivo al check in ***");
                 System.out.println("il tipo di passeggero è:"+event[6].passenger_type);
-                Block block=new Block(event[6]);
+                Block block=new Block(event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1]);
 
                 Queues_checkin.enqueue(block.priority,block);  // enqueue the current arrival into the respective queue defined by 'priority'
-                number_queues_checkin[event[6].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
+                number_queues_checkin[event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
                 //number++; // incremento numero dei job nel sistema
                 number_nodes[1]++;
                 if (number_nodes[1] <= MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO) {
@@ -561,7 +561,7 @@ class Msq {
                 System.out.println("IL NUMERO DEL NODO è :"+number_nodes[9]);
                 if (number_nodes[9] <= MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_IMBARCO) {
                     int poi=0;
-                    if (block.priority==1 && event[37].x==0){
+                    if (block.priority==1 && event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].x==0){
                         Block passenger_served = Queues_imbarco.dequeue(block.priority);
                         service         = m.getServiceGate(r);
                         //37
@@ -1047,11 +1047,11 @@ class Msq {
         System.out.println("  avg # in queue ..... =   " + f.format(area / t.current));
         System.out.println("\nthe server statistics are:\n");
         System.out.println("    server     utilization     avg service      share");
-        for (s = 1; s <= SERVERS+SERVER_DEDICATO; s++) {
+        for (s = 1; s <= 45; s++) {
             System.out.print("       " + s + "          " + g.format(sum[s].service / t.current) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
-        for (s = 7; s < 7+SERVERS+SERVER_DEDICATO; s++) {
+        /*for (s = 7; s < 7+SERVERS+SERVER_DEDICATO; s++) {
             System.out.print("       " + s + "          " + g.format(sum[s].service / t.current) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
@@ -1068,7 +1068,7 @@ class Msq {
         for (s =33; s <= 37; s++) {
             System.out.print("       " + s + "          " + g.format(sum[s].service / t.current) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
-        }
+        }*/
         System.out.println("");
 
     }

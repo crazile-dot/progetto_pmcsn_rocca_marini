@@ -1,7 +1,7 @@
 public class MMValues {
     public static int SERVER_BIGLIETTERIA=4;
     public static int SERVER_BIGLIETTERIA_DEDICATO=1;
-    public static int SERVER_CHECK_IN=4;
+    public static int SERVER_CHECK_IN=6;
     public static int SERVER_CHECK_DEDICATO=1;
     public static int SERVER_CARTA_IMBARCO=4;
     public static int SERVER_CARTA_IMBARCO_DEDICATO=2;
