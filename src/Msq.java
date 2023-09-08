@@ -101,13 +101,13 @@ class Msq {
         MsqT t = new MsqT();
 
         Path fileName = Path.of(
-                "C:\\Users\\Ilenia\\Desktop\\output.txt");
+                "C:\\Users\\Adriano\\Desktop\\output.txt");
         String out = "";
 
         t.current    = START;
         event[0].t   = getArrival(r);
         event[0].x   = 1;
-        for (s = 1; s <= 38; s++) {
+        for (s = 1; s <= 100000; s++) {
             event[s].t     = START;          /* this value is arbitrary because */
             event[s].x     = 0;              /* all servers are initially idle  */
             sum[s].service = 0.0;
@@ -121,7 +121,7 @@ class Msq {
 
         while ((event[0].x != 0) || (number != 0)) {
             System.out.println("***** IL NUMERO DEI JOB NEL SISTEMA E': "+number);
-            System.out.println("Lista eventi:");
+           /* System.out.println("Lista eventi:");
             System.out.println("arrivo:"+event[0].x);
             System.out.println("server biglietteria 1:"+event[1].x);
             System.out.println("server biglietteria 2:"+event[2].x);
@@ -154,10 +154,12 @@ class Msq {
             System.out.println("coda  2:"+(number_nodes[7]-1));
             System.out.println("arrivi security:"+event[25].x);
             System.out.println("server security:"+event[26].x);
-            System.out.println("server check in 2:"+event[27].x);
-            System.out.println("server check in 3:"+event[28].x);
-            System.out.println("server check in 4:"+event[29].x);
-            System.out.println("server check dedicato:"+event[30].x);
+            System.out.println("server security 2:"+event[27].x);
+            System.out.println("server security3:"+event[28].x);
+            System.out.println("server security 4:"+event[29].x);
+            System.out.println("server security dedicato:"+event[30].x);
+            System.out.println("coda security N:" + number_queues_security[0]);
+            System.out.println("coda security FF:" + number_queues_security[1]);
             System.out.println("arrivi security:"+event[32].x);
             System.out.println("server imbarco:"+event[33].x);
             System.out.println("server imbarco 2:"+event[34].x);
@@ -166,9 +168,160 @@ class Msq {
             System.out.println("server imbarco dedicato:"+event[37].x);
             System.out.println("server imbarco coda ff:"+number_queues_imbarco[1]);
             System.out.println("server coda N2:"+number_queues_imbarco[2]);
-            System.out.println("server coda N:"+number_queues_imbarco[0]);
+            System.out.println("server coda N:"+number_queues_imbarco[0]);*/
+            int q=1;
+            for (s = 1; s <= MMValues.SERVER_BIGLIETTERIA; s++) {
+                System.out.println("server biglietteria  "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda biglietteria:"+number_queues[0]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO; s++) {
+                System.out.println("server biglietteria dedicato "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda biglietteria dedicato:"+number_queues[1]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+2; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN; s++) {
+                System.out.println("server check in "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda check in:"+number_queues_checkin[0]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO; s++) {
+                System.out.println("server check in dedicato "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda check in dedicato:"+number_queues_checkin[1]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+8; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO; s++) {
+                System.out.println("server carta imbarco "+q+":"+event[s].x);
+                q++;
+            }
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO; s++) {
+                System.out.println("server carta imbarco dedicato "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda carta:"+number_nodes[2]);
+            System.out.println("coda carta:"+number_nodes[3]);
+            System.out.println("coda carta:"+number_nodes[4]);
+            System.out.println("coda carta:"+number_nodes[5]);
+            System.out.println("coda carta dedicato:"+number_nodes[6]);
+            System.out.println("coda carta dedicato:"+number_nodes[7]);
 
-             out = out + "***** IL NUMERO DEI JOB NEL SISTEMA E': "+number + "\n" +
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY; s++) {
+                System.out.println("server security  "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda security:"+number_queues_security[0]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO; s++) {
+                System.out.println("server security dedicato  "+q+":"+event[s].x);
+                q++;
+            }
+            System.out.println("coda security dedicato:"+number_queues_security[1]);
+
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+3; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO; s++) {
+
+                System.out.println("server imbarco  "+q+":"+event[s].x);
+
+                q++;
+            }
+            System.out.println("coda imbarco:"+number_queues_imbarco[0]);
+            System.out.println("coda imbarco:"+number_queues_imbarco[2]);
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO; s++) {
+                System.out.println("server imbarco dedicato "+q+":"+event[s].x);
+
+                q++;
+
+            }
+            System.out.println("coda imbarco:"+number_queues_imbarco[1]);
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_CONT_APP; s++) {
+                System.out.println("server controllo app:"+event[s].x);
+            }
+            System.out.println("coda controllo app:"+number_queues_security_app);
+            //print sul fle
+            out+="\n***** IL NUMERO DEI JOB NEL SISTEMA E': "+number;
+             q=1;
+            for (s = 1; s <= MMValues.SERVER_BIGLIETTERIA; s++) {
+                out+="\nserver biglietteria "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda biglietteria:"+number_queues[0];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO; s++) {
+                out+="\nserver biglietteria dedicato "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda biglietteria dedicato:"+number_queues[1];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+2; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN; s++) {
+                out+="\nserver check in "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda check in:"+number_queues_checkin[0];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO; s++) {
+                out+="\nserver check in dedicato "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda check in dedicato:"+number_queues_checkin[1];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+8; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO; s++) {
+                out+="\nserver carta imbarco "+q+":"+event[s].x;
+                q++;
+            }
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO; s++) {
+                out+="\nserver carta imbarco dedicato "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda carta:"+number_nodes[2];
+            out+="\ncoda carta:"+number_nodes[3];
+            out+="\ncoda carta:"+number_nodes[4];
+            out+="\ncoda carta:"+number_nodes[5];
+            out+="\ncoda carta:"+number_nodes[6];
+            out+="\ncoda carta dedicato:"+number_nodes[7];
+            out+="\ncoda carta dedicato:"+number_nodes[8];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY; s++) {
+                out+="\nserver security  "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda security:"+number_queues_security[0];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO; s++) {
+                out+="\nserver security dedicato  "+q+":"+event[s].x;
+                q++;
+            }
+            out+="\ncoda security dedicato:"+number_queues_security[1];
+
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+3; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO; s++) {
+
+                out+="\nserver imbarco  "+q+":"+event[s].x;
+
+                q++;
+            }
+            out+="\ncoda imbarco:"+number_queues_imbarco[0];
+            out+="\ncoda imbarco:"+number_queues_imbarco[2];
+            q=1;
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO; s++) {
+                out+="\nserver imbarco dedicato "+q+":"+event[s].x;
+
+                q++;
+
+            }
+            out+=("coda imbarco:"+number_queues_imbarco[1]);
+            for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_CONT_APP; s++) {
+                out+=("\nserver controllo app:"+event[s].x);
+            }
+            out+=("\ncoda controllo app:"+number_queues_security_app);
+            /* out = out + "***** IL NUMERO DEI JOB NEL SISTEMA E': "+number + "\n" +
                      //"          Sto processando l'evento " + e +
                     "            Lista eventi:\n" +
                     "            arrivo: "+event[0].x + "\n" +
@@ -218,9 +371,9 @@ class Msq {
                     "            server coda N:\"+number_queues_imbarco[0]);\n" +
                     "            \n";
 
-
+*/
             // Writing into the file
-            //Files.writeString(fileName, out);
+           // Files.writeString(fileName, out);
 
 
 
@@ -279,7 +432,7 @@ class Msq {
                     event[0].x = 0;
                 r.selectStream(10);
                 double rndComp = r.random();
-                System.out.println("Valore Random company: " + rndComp);
+                //System.out.println("Valore Random company: " + rndComp);
                 /*if (rndComp > MMValues.singleCompanyPerc) {
                     r.selectStream(2);
                     double rndFF = r.random();
@@ -355,7 +508,7 @@ class Msq {
                         /*event[0].t = getArrival(r);
                         if (event[0].t > STOP)
                             event[0].x = 0;*/
-                        if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
+                       // if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
                             int l = 0;
                             for (int z = MMValues.SERVER_BIGLIETTERIA + 1; z <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO; z++) {
                                 if (event[z].x == 0) {
@@ -365,14 +518,15 @@ class Msq {
                             if (block.priority == 1 && l == 1) {
                                 areaBiglietteriaDedicata += (t.next - t.current) * number;
                                 Block passenger_served = Queues.dequeue(block.priority);
+                                s=findOne(event, MMValues.SERVER_BIGLIETTERIA + 1,MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO);
                                 service = getServiceBigl(r);
-                                sum[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].service += service;
-                                sum[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].served++;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].t = t.current + service;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].x = 1;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].priority = block.priority;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].passenger_type = block.type;
-                                number_queues[event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO].priority] -= 1;
+                                sum[s].service += service;
+                                sum[s].served++;
+                                event[s].t = t.current + service;
+                                event[s].x = 1;
+                                event[s].priority = block.priority;
+                                event[s].passenger_type = block.type;
+                                number_queues[event[s].priority] -= 1;
 
                             } else {
                                 l = 0;
@@ -385,8 +539,12 @@ class Msq {
                                     System.out.println("\n***sono dentro else***");
                                     Block passenger_served = Queues.dequeue(block.priority);
                                     service = getServiceBigl(r);
-                                    s = m.findOne(event);
+                                    s = m.findOne(event,1,MMValues.SERVER_BIGLIETTERIA);
+                                    System.out.println("SCELGO IL SERVER NUMERO:"+s);
+                                    out+="\nSCELGO IL SERVER NUMERO:"+s;
                                     sum[s].service += service;
+                                    System.out.println("il servizio è"+service);
+                                    out+="\nil servizio è"+service;
                                     sum[s].served++;
                                     event[s].t = t.current + service;
                                     event[s].x = 1;
@@ -395,35 +553,42 @@ class Msq {
                                     number_queues[event[s].priority] -= 1;
                                 }
                             }
-                        }
+                        //}
                     }
                 //}
             } else if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1){ /* process an arrival at check-in*/
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].x=0; //6
                 System.out.println("\n *** Sto processando un arrivo al check in ***");
-                System.out.println("il tipo di passeggero è:"+event[6].passenger_type);
+                System.out.println("il tipo di passeggero è:"+event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].passenger_type);
                 Block block=new Block(event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1]);
 
                 Queues_checkin.enqueue(block.priority,block);  // enqueue the current arrival into the respective queue defined by 'priority'
                 number_queues_checkin[event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
                 //number++; // incremento numero dei job nel sistema
                 number_nodes[1]++;
-                if (number_nodes[1] <= MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO) {
-                    if (block.priority==1 && event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].x==0){
+               // if (number_nodes[1] <= MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO) {
+                    int l=0;
+                    for(int z=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+1+1;z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1;z++){
+                        if(event[z].x==0){
+                            l=1;
+                        }
+                    }
+                    if (block.priority==1 && l==1){
                         Block passenger_served = Queues_checkin.dequeue(block.priority);
                         service         = getServiceChk(r);
-                        sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].service += service;
-                        sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].served++;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].t      = t.current + service;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].x      = 1;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].priority= block.priority;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].passenger_type= block.type;
-                        number_queues_checkin[event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1].priority] -= 1;
+                        s=findOne(event,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+1+1,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+1+MMValues.SERVER_CHECK_DEDICATO);
+                        sum[s].service += service;
+                        sum[s].served++;
+                        event[s].t      = t.current + service;
+                        event[s].x      = 1;
+                        event[s].priority= block.priority;
+                        event[s].passenger_type= block.type;
+                        number_queues_checkin[event[s].priority] -= 1;
 
                     }
                     else {
-                        int l=0;
-                        for(int z=7;z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN;z++){
+                        l=0;
+                        for(int z=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+1;z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+1+MMValues.SERVER_CHECK_IN;z++){
                             if(event[z].x==0){
                                 l=1;
                             }
@@ -442,7 +607,7 @@ class Msq {
                             number_queues_checkin[event[s].priority] -= 1;
                         }
                     }
-                }
+                //}
 
 
             }
@@ -506,15 +671,16 @@ class Msq {
             else if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2) {
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2].x=0;
                 System.out.println("\n *** Sto processando un arrivo alla security ***");
-                System.out.println("il tipo di passeggero è:"+event[25].passenger_type);
+                System.out.println("La prio del passeggero è: "+event[e].priority);
                 Block block=new Block(event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2]);
 
                 Queues_security.enqueue(block.priority,block);  // enqueue the current arrival into the respective queue defined by 'priority'
+                System.out.println("La prio del passeggero è block: "+block.priority);
                 number_queues_security[event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
                 //number++; // incremento numero dei job nel sistema
                 ;
                 number_nodes[8]++;
-                if (number_nodes[8] <= MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO) {
+               // if (number_nodes[8] <= MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO) {
                     int l=0;
                     for(int z=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+1;z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO;z++){
                         if(event[z].x==0){
@@ -524,6 +690,7 @@ class Msq {
                     if (block.priority==1 && l==1){
                         Block passenger_served = Queues_security.dequeue(block.priority);
                         service         = getServiceSec(r);
+
                         s=findOne(event,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+1,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO);
                         sum[s].service += service;
                         sum[s].served++;
@@ -556,7 +723,7 @@ class Msq {
                             number_queues_security[event[s].priority] -= 1;
                         }
                     }
-                }
+               // }
             }
             else if ( e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2){
                 event[ MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2].x=0;
@@ -573,28 +740,37 @@ class Msq {
                 ;
                 number_nodes[9]++;
                 System.out.println("IL NUMERO DEL NODO è :"+number_nodes[9]);
-                if (number_nodes[9] <= MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_IMBARCO) {
+                //if (number_nodes[9] <= MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_IMBARCO) {
+                    int  l=0;
+                    for(int z=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+MMValues.SERVER_IMBARCO+1+1+1;
+                        z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO;z++){
+                        if(event[z].x==0){
+                            l=1;
+                        }
+                    }
                     int poi=0;
-                    if (block.priority==1 && event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].x==0){
+                    if (block.priority==1 && l==1){
                         Block passenger_served = Queues_imbarco.dequeue(block.priority);
                         service         = m.getServiceGate(r);
                         //37
-                        sum[ MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].service += service;
-                        sum[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].served++;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].t      = t.current + service;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].x      = 1;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].priority= block.priority;
-                        event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].passenger_type= block.type;
-                        number_queues_imbarco[event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO].priority] -= 1;
+                        s=findOne(event,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+MMValues.SERVER_IMBARCO+1+1+1,MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO);
+                        sum[s].service += service; //MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO
+                        sum[s].served++;
+                        event[s].t      = t.current + service;
+                        event[s].x      = 1;
+                        event[s].priority= block.priority;
+                        event[s].passenger_type= block.type;
+                        number_queues_imbarco[event[s].priority] -= 1;
                         poi=1;
                     }
-                    int  l=0;
+                      l=0;
                     for(int z=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+3;
                         z<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO;z++){
                         if(event[z].x==0){
                             l=1;
                         }
                     }
+                    //SSSS
                     if (block.priority==2 && (l==1)){
                         System.out.println("\nsono nell'if");
                         Block passenger_served = Queues_imbarco.dequeue(block.priority);
@@ -624,7 +800,7 @@ class Msq {
                         number_queues_imbarco[event[s].priority] -= 1;
                     }
 
-                }
+                //}
             }
             else if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+1){
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+1].x=0;
@@ -640,7 +816,9 @@ class Msq {
                 if (number_nodes[10] <= MMValues.SERVER_CONT_APP){
                     Block passenger_served = Queues_security_app.dequeue(0);
                     service = m.getServiceSec2(r);
-                    s=findOne(event, MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+1, MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_CONT_APP);
+                    s=findOne(event, MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+
+                            MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+1,
+                            MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+2+MMValues.SERVER_SECURITY+ MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_CONT_APP);
                     sum[ s].service += service;
                     sum[s].served++;
                     event[ s].t = t.current + service;
@@ -656,7 +834,7 @@ class Msq {
                 // number--;
                 s = e;
 
-                if(s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO){
+                if(s>=MMValues.SERVER_BIGLIETTERIA+1 &&s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO){
                     number_nodes[0]--;
                     System.out.println("\n***Sto processando la departure del server dedicato***");
                     System.out.println(number_queues[1]);
@@ -680,7 +858,7 @@ class Msq {
                         event[s].x      = 0;
                     }
                 }
-                else if(s==1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN){ //11
+                else if(s>=1+1+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN && s<=1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN){ //11
                     number_nodes[1]--;
                     System.out.println("\n***Sto processando la departure del server dedicato check_in ***");
                     System.out.println(number_queues_checkin[1]);
@@ -834,12 +1012,12 @@ class Msq {
                 }
                 else if (s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2 ||s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+1) {
                     // number--;
-                    System.out.println("\n**** Sto processando una departure dal server dedicato carta imbarco****");
+                    System.out.println("\n**** Sto processando una departure dal server dedicato carta imbarco prioritario ****");
                     System.out.println("\n"+number);
-                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3].x=1;
-                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3].t=t.current;
-                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3].priority=1;
-                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3].passenger_type=1;
+                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2].x=1;
+                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2].t=t.current;
+                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2].priority=1;
+                    event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2].passenger_type=1;
                     int k =findNode(s);
                     number_nodes[k]--;
                     if(number_nodes[k]>0 ) {
@@ -916,7 +1094,7 @@ class Msq {
                         event[s].x=0;
                     }
                 }
-                else if(s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO){
+                else if(s>=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2+MMValues.SERVER_SECURITY+1 && s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO){
                     System.out.println("\n**** Sto processando una departure dal server dedicato Security***");
                     //number--;
                     number_nodes[8]--;
@@ -988,7 +1166,7 @@ class Msq {
                         event[s].x=0;
                     }
                 }
-                else if(s>=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1 && s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO){
+                else if(s>=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1 && s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO){
                     number--;
                     number_nodes[9]--;
                     System.out.println("******Sto processando una departure dal server dedicato********");
@@ -1008,7 +1186,7 @@ class Msq {
                         event[s].x=0;
                     }
                 }
-                else if(s==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1+MMValues.SERVER_IMBARCO_DEDICATO){
+                else if(s>=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1+MMValues.SERVER_IMBARCO_DEDICATO && s<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 2+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO +MMValues.SERVER_CONT_APP ){
 //38
                     number_nodes[10]--;
                     System.out.println("*******Sto processando una departure dal server Controllo approfondito*********");
@@ -1022,6 +1200,7 @@ class Msq {
                     }
                     else{
                         number--;
+
                     }
                     if(number_queues_security_app>0 ) {
 
@@ -1037,6 +1216,7 @@ class Msq {
                     else {
                         event[s].x=0;
                     }
+
                 }
                 else {
                     event[s].x=0;
@@ -1095,6 +1275,7 @@ class Msq {
                 tSecurD = event[s].t;
             }
         }
+        System.out.println(tSecurD);
         for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+3; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO; s++) {
             if (event[s].t > tGate) {
                 tGate = event[s].t;
@@ -1102,12 +1283,13 @@ class Msq {
         }
         for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO; s++) {
             if (event[s].t > tGateD) {
-                tGate = event[s].t;
+                tGateD = event[s].t;
             }
         }
+        System.out.println(t);
         for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO+MMValues.SERVER_IMBARCO_DEDICATO+MMValues.SERVER_CONT_APP; s++) {
             if (event[s].t > tSecur2) {
-                tGate = event[s].t;
+                tSecur2 = event[s].t;
             }
         }
 
@@ -1121,7 +1303,7 @@ class Msq {
 
         for (s = 1; s <= MMValues.SERVER_BIGLIETTERIA; s++) {
             System.out.print("       " + s + "          " + g.format(sum[s].service / tBigliett) + "            ");
-            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
         }
         for (s = MMValues.SERVER_BIGLIETTERIA+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO; s++) {
             System.out.print("       " + s + "          " + g.format(sum[s].service / tBigliettD) + "            ");
@@ -1148,7 +1330,7 @@ class Msq {
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
         for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+1; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO; s++) {
-            System.out.print("       " + s + "          " + g.format(sum[s].service / tSecur2) + "            ");
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tSecurD) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
         for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+3; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO; s++) {
@@ -1194,8 +1376,8 @@ class Msq {
 
 
     private static int findOne_controllo_dedicato() {
-        int i=1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
-        int current=1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
+        int i=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
+        int current=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CARTA_IMBARCO+1;
 
         if (number_nodes[findNode(current)]>number_nodes[findNode(i+1)]){
             current=i+1;
@@ -1218,6 +1400,7 @@ class Msq {
     }
 
     private static int findNode(int e) {
+
         if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+2 || e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2){
             return 2;
         }
@@ -1226,16 +1409,16 @@ class Msq {
         }
         if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+4 || e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+2) return 4;
         if(e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+3 || e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+5) return 5;
-        if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+6 || e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+4){
+        if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+2 || e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+4){
             return 6;
         }
-        if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7 || e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+5){
+        if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO+1+MMValues.SERVER_CARTA_IMBARCO_DEDICATO|| e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+5){
             return 7;
         }
         if(e== MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+6){
             return 8;
         }
-        return 100000;
+        return -1;
     }
 
 
@@ -1326,7 +1509,7 @@ class Msq {
         while (event[i].x == 0)       /* find the index of the first 'active' */
             i++;                        /* element in the event list            */
         e = i;
-        while (i <40) {         /* now, check the others to find which  */
+        while (i <100) {         /* now, check the others to find which  */
             i++;                        /* event type is most imminent          */
             if ((event[i].x == 1) && (event[i].t < event[e].t))
                 e = i;
@@ -1358,12 +1541,12 @@ class Msq {
          * -----------------------------------------------------
          */
         int s;
-        int i = 7;
+        int i = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+1;
 
         while (event[i].x == 1 && i<=MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN)       /* find the index of the first available */
             i++;                        /* (idle) server                         */
         s = i;
-        while (i < 10) {         /* now, check the others to find which   */
+        while (i < MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN) {         /* now, check the others to find which   */
             i++;                        /* has been idle longest                 */
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1420,7 +1603,7 @@ class Msq {
         if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+5) return MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+3;
         if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+6)return MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+4;
         if (e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7)return MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+1+MMValues.SERVER_CARTA_IMBARCO*2+5;
-        return 1000000;
+        return -1;
 
     }
     public static int findOne(MsqEvent [] event, int min, int max) {
@@ -1432,7 +1615,7 @@ class Msq {
         int s;
         int i = min;
 
-        while (event[i].x == 1)       /* find the index of the first available */
+        while (event[i].x == 1 && i<=max )       /* find the index of the first available */
             i++;                        /* (idle) server                         */
         s = i;
         while (i < max) {         /* now, check the others to find which   */
