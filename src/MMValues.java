@@ -43,7 +43,8 @@ public class MMValues {
 
     public static double firstClassGatePercentage = 0.4;
     public static double secondClassGatePercentage = 0.6;
-
+    public static double imbarcoPerc=0.985;
+    public static double passeggeriDietroProb=0.4;
     public static double biglService = 5;
     public static double chckinService = 4;
     public static double scannService = 0.05;
