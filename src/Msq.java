@@ -770,6 +770,7 @@ class Msq {
                             l=1;
                         }
                     }
+                    //SSSS
                     if (block.priority==2 && (l==1)){
                         System.out.println("\nsono nell'if");
                         Block passenger_served = Queues_imbarco.dequeue(block.priority);
