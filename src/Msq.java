@@ -83,6 +83,8 @@ class Msq {
     static int numberImbarcoDedic=0;
     static int numberContrApp=0;
     static int numberContrAppDedic=0;
+
+
     public static void main(String[] args) throws IOException {
 
         /*= l(t)     number in the node     */
@@ -142,8 +144,19 @@ class Msq {
 
         MsqT t = new MsqT();
 
-        Path fileName = Path.of(
-                "C:\\Users\\Adriano\\Desktop\\output.txt");
+        Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitBiglietteriaFF.txt");
+        Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitBiglietteriaN.txt");
+        Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitCheckinFF.txt");
+        Path waitCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitCheckinN.txt");
+        Path waitScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitScannerFF.txt");
+        Path waitScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitScannerN.txt");
+        Path waitSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitSecurityFF.txt");
+        Path waitSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitSecurityN.txt");
+        Path waitSecurityAppFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitSecurityAppFF.txt");
+        Path waitSecurityAppN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitSecurityAppN.txt");
+        Path waitImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\waitImbarcoFF.txt");
+        Path waitImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\waitImbarcoN.txt");
+
         String out = "";
 
         t.current    = START;
@@ -1667,6 +1680,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeFF.get(s));
+
 
         }
         System.out.println("*********************************");
