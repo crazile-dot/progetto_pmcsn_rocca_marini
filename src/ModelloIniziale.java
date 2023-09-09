@@ -28,7 +28,7 @@ class Area {
 public class ModelloIniziale {
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
-    static double STOP  = 170000.0;          /* terminal (close the door) time */
+    static double STOP  = 1000000.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
     static double LAMBDA;
@@ -36,7 +36,7 @@ public class ModelloIniziale {
     static double fasciaOraria = MMValues.fasciaOraria1;
 
     static int SERVERS = 4;              /* number of servers */
-    static int NODES = 15;
+    static int NODES = 16;
     static int[] number_queues={0,0};
     static double sarrival = START;
     static  Node [] nodes = new Node [NODES];
@@ -467,7 +467,7 @@ public class ModelloIniziale {
                 }
 
 
-                if(nodes[14].number<Values.SERVERS_IMBARCO){
+                if(nodes[14].number<=Values.SERVERS_IMBARCO){
                     if(block.priority==2){
                         Block b=Queue_imbarco1.dequeue(1);
                         number_queues[1]--;
@@ -721,9 +721,9 @@ public class ModelloIniziale {
                             event[s].t = t.current + singleService;
                             event[s].priority= block.priority;
                             event[s].passenger_type= block.type;
-                            number_queues[1] -= 1;
-                        }
-                        else if(number_queues[0]>0){
+                           number_queues[1] -= 1;
+                       }
+                       else if(number_queues[0]>0){
                             Block block = new Block(Queue_imbarco1.dequeue(0));
                             singleService = getService(r);
                             sum[s].service += singleService;
