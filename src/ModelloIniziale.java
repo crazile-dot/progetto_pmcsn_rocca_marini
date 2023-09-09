@@ -28,18 +28,19 @@ class Area {
 public class ModelloIniziale {
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
-    static double STOP  = 1000000.0;          /* terminal (close the door) time */
+    static double STOP  = 2000.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
     static double LAMBDA;
     static double SERVICE = 2;
-    static double fasciaOraria = MMValues.fasciaOraria1;
+    static double fasciaOraria = MMValues.fasciaOraria3;
 
     static int SERVERS = 4;              /* number of servers */
     static int NODES = 16;
     static int[] number_queues={0,0};
     static double sarrival = START;
     static  Node [] nodes = new Node [NODES];
+    static int ya=0;
     public static void main(String[] args) {
 
         long index = 0;                  /* used to count departed jobs         */
@@ -82,8 +83,8 @@ public class ModelloIniziale {
         t.current = START;
         event[0].t = getArrival(r);
         event[0].x = 1;
-        event[1].t = getArrival(r);
-        event[1].x = 1;
+       // event[1].t = getArrival(r);
+       // event[1].x = 1;
 
         for (n = 2; n <100; n++) {
             event[n].t = START;
@@ -96,79 +97,85 @@ public class ModelloIniziale {
         int iteration = 0;
 
         while ((event[0].x != 0) || event[1].x != 0 || (number != 0)) {
-           System.out.println("ILNUMERO DEI JOB NEL SISTEMA E':"+number);
-            int q=1;
-            for (s = 1; s <= Values.SERVERS_BIGLIETTERIA; s++) {
-                System.out.println("server biglietteria  "+q+":"+event[s].x);
+            int q=0;
+          /*  for (s = 0; s <=73 ; s++) {
+                System.out.println("evento:" + q + ":" + event[s].t);
+                q++;
+            }*/
+            System.out.println("ILNUMERO DEI JOB NEL SISTEMA E':" + number);
+             q = 1;
+            for (s = 2; s <= 1+Values.SERVERS_BIGLIETTERIA; s++) {
+                System.out.println("server biglietteria  " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda biglietteria:"+(nodes[1].number-Values.SERVERS_BIGLIETTERIA));
-            q=1;
-            for (s = 1+Values.SERVERS_BIGLIETTERIA+1; s <= 1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA; s++) {
-                System.out.println("server biglietteria dedicato "+q+":"+event[s].x);
+            System.out.println("coda biglietteria:" + (nodes[1].number - Values.SERVERS_BIGLIETTERIA));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA; s++) {
+                System.out.println("server biglietteria dedicato " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda biglietteria dedicato:"+(nodes[0].number-Values.SERVERS_DEDICATO_BIGLIETTERIA));
-            q=1;
-            for (s =1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+1; s<=1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN; s++) {
-                System.out.println("server check in "+q+":"+event[s].x);
+            System.out.println("coda biglietteria dedicato:" + (nodes[0].number - Values.SERVERS_DEDICATO_BIGLIETTERIA));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_CHECK_IN; s++) {
+                System.out.println("server check in " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda check in:"+(nodes[3].number-Values.SERVERS_CHECK_IN));
-            q=1;
-            for (s =1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+1; s <= 1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN; s++) {
-                System.out.println("server check in dedicato "+q+":"+event[s].x);
+            System.out.println("coda check in:" + (nodes[3].number - Values.SERVERS_CHECK_IN));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN; s++) {
+                System.out.println("server check in dedicato " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda check in dedicato:"+(nodes[2].number-Values.SERVER_DEDICATO_CHECK_IN));
-            q=1;
-            for (s =1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2; s++) {
-                System.out.println("server carta imbarco "+q+":"+event[s].x);
+            System.out.println("coda check in dedicato:" + (nodes[2].number - Values.SERVER_DEDICATO_CHECK_IN));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++) {
+                System.out.println("server carta imbarco " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda imbarco:"+(nodes[5].number-1));
-            System.out.println("coda imbarco:"+(nodes[6].number-1));
-            System.out.println("coda imbarco:"+(nodes[7].number-1));
-            System.out.println("coda imbarco:"+(nodes[8].number-1));
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2; s++) {
-                System.out.println("server carta imbarco dedicato "+q+":"+event[s].x);
+            System.out.println("coda imbarco:" + (nodes[5].number - 1));
+            System.out.println("coda imbarco:" + (nodes[6].number - 1));
+            System.out.println("coda imbarco:" + (nodes[7].number - 1));
+            System.out.println("coda imbarco:" + (nodes[8].number - 1));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++) {
+                System.out.println("server carta imbarco dedicato " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda imbarco dedicato 1:"+(nodes[4].number-1));
-            System.out.println("coda imbarco dedicato 2:"+(nodes[9].number-1));
+            System.out.println("coda imbarco dedicato 1:" + (nodes[4].number - 1));
+            System.out.println("coda imbarco dedicato 2:" + (nodes[9].number - 1));
 
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_DEDICATI_SECURITY+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_DEDICATI_SECURITY+Values.SERVERS_SECURITY; s++) {
-                System.out.println("server security  "+q+":"+event[s].x);
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + Values.SERVERS_SECURITY; s++) {
+                System.out.println("server security  " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda security:"+(nodes[11].number-Values.SERVERS_SECURITY));
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_DEDICATI_SECURITY; s++) {
-                System.out.println("server security dedicato  "+q+":"+event[s].x);
+            System.out.println("coda security:" + (nodes[11].number - Values.SERVERS_SECURITY));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY; s++) {
+                System.out.println("server security dedicato  " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda security prioritari:"+(nodes[10].number-Values.SERVERS_DEDICATI_SECURITY));
+            System.out.println("coda security prioritari:" + (nodes[10].number - Values.SERVERS_DEDICATI_SECURITY));
 
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI; s++) {
-                System.out.println("server controllo approfondito  "+q+":"+event[s].x);
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + Values.SERVERS_CONTROLLI_APPROFODNITI; s++) {
+                System.out.println("server controllo approfondito  " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda controllo app"+(nodes[12].number-Values.SERVERS_CONTROLLI_APPROFODNITI));
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2+Values.SERVERS_IMBARCO_DEDICATO; s++) {
-                System.out.println("server  imbarco dedicato: "+q+":"+event[s].x);
+            System.out.println("coda controllo app" + (nodes[12].number - Values.SERVERS_CONTROLLI_APPROFODNITI));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + Values.SERVERS_CONTROLLI_APPROFODNITI + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + Values.SERVERS_CONTROLLI_APPROFODNITI + 2 + Values.SERVERS_IMBARCO_DEDICATO; s++) {
+                System.out.println("server  imbarco dedicato: " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda imbarco dedicato"+(nodes[13].number-Values.SERVERS_IMBARCO_DEDICATO));
-            q=1;
-            for (s = 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2+Values.SERVERS_IMBARCO_DEDICATO+1; s <= 1+ Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_SCANSIONE_CARTA*2+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2+Values.SERVERS_IMBARCO_DEDICATO+Values.SERVERS_IMBARCO; s++) {
-                System.out.println("server  imbarco: "+q+":"+event[s].x);
+            System.out.println("coda imbarco dedicato" + (nodes[13].number - Values.SERVERS_IMBARCO_DEDICATO));
+            q = 1;
+            for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + Values.SERVERS_CONTROLLI_APPROFODNITI + 2 + Values.SERVERS_IMBARCO_DEDICATO + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_SECURITY + Values.SERVERS_DEDICATI_SECURITY + 1 + Values.SERVERS_CONTROLLI_APPROFODNITI + 2 + Values.SERVERS_IMBARCO_DEDICATO + Values.SERVERS_IMBARCO; s++) {
+                System.out.println("server  imbarco: " + q + ":" + event[s].x);
                 q++;
             }
-            System.out.println("coda imbarco"+(nodes[14].number-Values.SERVERS_IMBARCO));
+            System.out.println("coda imbarco" + (nodes[14].number - Values.SERVERS_IMBARCO));
+            System.out.println("NUMEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"+ya);
             /*
             for (s = MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+3; s <= MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+7+MMValues.SERVER_CARTA_IMBARCO+MMValues.SERVER_CARTA_IMBARCO_DEDICATO+1+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2+MMValues.SERVER_IMBARCO; s++) {
 
@@ -257,55 +264,137 @@ public class ModelloIniziale {
             t.current = t.next;                            /* advance the clock*/
 
             if (e == 0 || e == 1) {
-                /* process an arrival*/
                 number++;
-                System.out.println("\n*** Sto Processando un arrivo ***");
+                r.selectStream(10 + idx);
+                idx++;
+                rnd = r.random();
+                if (rnd > MMValues.FFPercentage) {
+                    event[0].t = getArrival(r);
+                    event[0].x=1;
+                    event[1].x=0;
+                    //System.out.println("Primo arrivo normale: " + event[0].t);
+                    if (event[0].t > STOP) {
+                        event[0].x = 0;
+                    }
+
+
+                } else {
+                    event[1].t = getArrival(r);
+                    event[1].x=1;
+                    event[0].x=0;
+                    //System.out.println("Primo arrivo ff: " + event[1].t);
+                    if (event[1].t > STOP) {
+                        event[1].x = 0;
+                    }
+                }
+                r.selectStream(4);
+                double rndB = r.random();
+                if(rndB > MMValues.noTktNPercentage + MMValues.noTktFFPercentage) {
+                    r.selectStream(8);
+                    double rndC = r.random();
+                    if (rndC > MMValues.noChkinNPercentage + MMValues.noChkinFFPercentage) {
+                        r.selectStream(2);
+                        double rndFF = r.random();
+                        if (e==0) {
+                            System.out.println("********STO IMPOSTANDO QUESTO VALORE ***********");
+                            int i = find_best_server();
+                            event[i].x = 1;
+                            event[i].t = t.current;
+                            event[i].priority = 0;
+                            event[i].passenger_type = 0;
+                        } else {
+                            int i = find_best_server_dedicato();
+                            System.out.println("********STO IMPOSTANDO QUESTO VALORE DEDICATO ***********");
+                            event[i].x = 1;
+                            event[i].t = t.current;
+                            event[i].priority = 1;
+                            event[i].passenger_type = 1;
+                        }
+                    }
+                    else{
+                        r.selectStream(2);
+                        double rndFF = r.random();
+                        if (e==0) {
+                            System.out.println("********STO IMPOSTANDO QUESTO VALORE  CHECK IN***********");
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].x = 1;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].t = t.current;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].priority = 0;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].passenger_type = 0;
+                        } else {
+                            System.out.println("********STO IMPOSTANDO QUESTO VALORE DEDICATO CHECK IN***********");
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].x = 1;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].t = t.current;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].priority = 1;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].passenger_type = 1;
+                        }
+                    }
+                }else{
+                    System.out.println("\n*** Sto Processando un arrivo ***");
+                    if (e == 0) {
+                        nodes[1].number++;
+                    } else {
+                        ya++;
+                        nodes[0].number++;
+                    }
+
+
+
+
+                    if (e == 1 && nodes[0].number <= Values.SERVERS_DEDICATO_BIGLIETTERIA) {
+
+                        multiService = getService(r);
+                        s = findOne(event, 1 + Values.SERVERS_BIGLIETTERIA + 1, 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                        event[s].x = 1;
+                    } else if (e == 0 && nodes[1].number <= Values.SERVERS_BIGLIETTERIA) {
+
+                        multiService = getService(r);
+                        s = findOne(event, 2, Values.SERVERS_BIGLIETTERIA + 1);
+                        sum[s].service += multiService;
+                        sum[s].served++;
+                        event[s].t = t.current + multiService;
+                        event[s].x = 1;
+                    }
+
+
+
+                }
+                /* process an arrival*/
+
+
+               /* System.out.println("\n*** Sto Processando un arrivo ***");
                 if (e == 0) {
                     nodes[1].number++;
                 } else {
                     nodes[0].number++;
                 }
 
-                r.selectStream(10 + idx);
-                idx++;
-                rnd = r.random();
 
-                if (rnd > 0.2305) {
-                    event[0].t = getArrival(r);
-                    //System.out.println("Primo arrivo normale: " + event[0].t);
-                    if (event[0].t > STOP){
-                        event[0].x = 0;
-                    }
 
-                } else {
-                    event[1].t = getArrival(r);
-                    //System.out.println("Primo arrivo ff: " + event[1].t);
-                    if (event[1].t > STOP) {
-                        event[1].x = 0;
-                    }
-                }
+
                 if (e == 1 && nodes[0].number <= Values.SERVERS_DEDICATO_BIGLIETTERIA) {
 
                     multiService = getService(r);
-                    s=findOne(event,1+Values.SERVERS_BIGLIETTERIA+1, 1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA);
+                    s = findOne(event, 1 + Values.SERVERS_BIGLIETTERIA + 1, 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
                     event[s].x = 1;
-                }
-               else if (e == 0 && nodes[1].number <= Values.SERVERS_BIGLIETTERIA) {
+                } else if (e == 0 && nodes[1].number <= Values.SERVERS_BIGLIETTERIA) {
                     multiService = getService(r);
-                    s = findOne(event, 2, Values.SERVERS_BIGLIETTERIA + 1 );
+                    s = findOne(event, 2, Values.SERVERS_BIGLIETTERIA + 1);
                     sum[s].service += multiService;
                     sum[s].served++;
                     event[s].t = t.current + multiService;
                     event[s].x = 1;
                 }
 
+*/
 
 
-
-            }
+        }
             else if(e==1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2){ /* server dedicato*/
                 System.out.println("*****Sto Processando un arrivo al server dedicato check in**************");
                 event[e].x=0;
@@ -820,7 +909,7 @@ public class ModelloIniziale {
             LAMBDA = MMValues.arrivalFascia5;
 
         r.selectStream(0);
-        sarrival += exponential(LAMBDA, r);
+        sarrival += exponential(1/LAMBDA, r);
         return (ModelloIniziale.sarrival);
     }
 
