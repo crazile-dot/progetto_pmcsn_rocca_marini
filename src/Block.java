@@ -1,8 +1,12 @@
 // each block represents an element (job) in the queue
 public class Block {
-    double arrival_time= 0;
+    double arrival_time= 0.0;
+
     int type=0; // frequent flyer= 1 ; normale=0
     int priority=0;
+    double departure=0.0;
+    int number=0;
+    double arrive=0.0;
     Block(Block evento) {
         this.arrival_time = evento.arrival_time;
         this.type = evento.type;
