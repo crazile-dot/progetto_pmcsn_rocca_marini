@@ -479,105 +479,113 @@ class Msq {
                 event[0].t = getArrival(r);
                 if (event[0].t > STOP)
                     event[0].x = 0;
-                r.selectStream(10);
-                double rndComp = r.random();
-                //System.out.println("Valore Random company: " + rndComp);
-                /*if (rndComp > MMValues.singleCompanyPerc) {
-                    r.selectStream(2);
-                    double rndFF = r.random();
-                    if (rndFF > MMValues.FFPercentage) {
-                        int i = find_best_node();
-                        event[i].x = 1;
-                        event[i].t = t.current;
-                        event[i].priority = 0;
-                        event[i].passenger_type = 0;
-                    } else {
-                        int i = findOne_controllo_dedicato();
-                        event[i].x = 1;
-                        event[i].t = t.current;
-                        event[i].priority = 1;
-                        event[i].passenger_type = 1;
-                    }
-                } else {*/
 
-                    r.selectStream(4);
-                    double rndB = r.random();
-                    if (rndB > MMValues.noTktNPercentage + MMValues.noTktFFPercentage) {
-                        r.selectStream(8);
-                        double rndC = r.random();
-                        if (rndC > MMValues.noChkinNPercentage + MMValues.noChkinFFPercentage) {
-                            r.selectStream(2);
-                            double rndFF = r.random();
-                            if (rndFF > MMValues.FFPercentage) {
-                                int i = find_best_node();
-                                event[i].x = 1;
-                                event[i].t = t.current;
-                                event[i].priority = 0;
-                                event[i].passenger_type = 0;
-                            } else {
-                                int i = findOne_controllo_dedicato();
-                                event[i].x = 1;
-                                event[i].t = t.current;
-                                event[i].priority = 1;
-                                event[i].passenger_type = 1;
-                            }
-                        } else {
-                            r.selectStream(2);
-                            double rndFF = r.random();
-                            if (rndFF > MMValues.FFPercentage) {
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].x = 1;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].t = t.current;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].priority = 0;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].passenger_type = 0;
-                            } else {
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].x = 1;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].t = t.current;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].priority = 1;
-                                event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].passenger_type = 1;
-                            }
-                        }
-                    } else {
-
-                        System.out.println("\n\n****Sto processando un arrivo*****");
-
+                r.selectStream(4);
+                double rndB = r.random();
+                if (rndB > MMValues.noTktNPercentage + MMValues.noTktFFPercentage) {
+                    r.selectStream(8);
+                    double rndC = r.random();
+                    if (rndC > MMValues.noChkinNPercentage + MMValues.noChkinFFPercentage) {
                         r.selectStream(2);
-                        double rnd = r.random();                        // Prendo un numero casuale da Rngs
-                        System.out.println("\nil valore di rnd è:" + rnd);
-                        if (rnd > MMValues.FFPercentage) {
-                            event[0].passenger_type = 0;
-                            event[0].priority = 0;
-                            numberBiglDed++;
-
+                        double rndFF = r.random();
+                        if (rndFF > MMValues.FFPercentage) {
+                            int i = find_best_node();
+                            event[i].x = 1;
+                            event[i].t = t.current;
+                            event[i].priority = 0;
+                            event[i].passenger_type = 0;
                         } else {
-                            event[0].passenger_type = 1;
-                            event[0].priority = 1;
-                            numberBigl++;
+                            int i = findOne_controllo_dedicato();
+                            event[i].x = 1;
+                            event[i].t = t.current;
+                            event[i].priority = 1;
+                            event[i].passenger_type = 1;
                         }
-                        System.out.println("il tipo di passeggero è:" + event[0].passenger_type);
-                        Block block = new Block(event[0]);
-                        counterBigl++;
-                        block.number=counterBigl;
-                        block.arrival_time=t.current;
-                        Queues.enqueue(block.priority, block);  // enqueue the current arrival into the respective queue defined by 'priority'
-                        number_queues[event[0].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
-                        //number++; // incremento numero dei job nel sistema
-                        number_nodes[0]++;
-                        /*event[0].t = getArrival(r);
-                        if (event[0].t > STOP)
-                            event[0].x = 0;*/
-                       // if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
-                            int l = 0;
-                            for (int z = MMValues.SERVER_BIGLIETTERIA + 1; z <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO; z++) {
+                    } else {
+                        r.selectStream(2);
+                        double rndFF = r.random();
+                        if (rndFF > MMValues.FFPercentage) {
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].x = 1;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].t = t.current;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].priority = 0;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].passenger_type = 0;
+                        } else {
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].x = 1;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].t = t.current;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].priority = 1;
+                            event[MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO + 1].passenger_type = 1;
+                        }
+                    }
+                } else {
+
+                    System.out.println("\n\n****Sto processando un arrivo*****");
+
+                    r.selectStream(2);
+                    double rnd = r.random();                        // Prendo un numero casuale da Rngs
+                    System.out.println("\nil valore di rnd è:" + rnd);
+                    if (rnd > MMValues.FFPercentage) {
+                        event[0].passenger_type = 0;
+                        event[0].priority = 0;
+                        numberBiglDed++;
+
+                    } else {
+                        event[0].passenger_type = 1;
+                        event[0].priority = 1;
+                        numberBigl++;
+                    }
+                    System.out.println("il tipo di passeggero è:" + event[0].passenger_type);
+                    Block block = new Block(event[0]);
+                    counterBigl++;
+                    block.number=counterBigl;
+                    block.arrival_time=t.current;
+                    Queues.enqueue(block.priority, block);  // enqueue the current arrival into the respective queue defined by 'priority'
+                    number_queues[event[0].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
+                    //number++; // incremento numero dei job nel sistema
+                    number_nodes[0]++;
+                    /*event[0].t = getArrival(r);
+                    if (event[0].t > STOP)
+                        event[0].x = 0;*/
+                   // if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
+                        int l = 0;
+                        for (int z = MMValues.SERVER_BIGLIETTERIA + 1; z <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO; z++) {
+                            if (event[z].x == 0) {
+                                l = 1;
+                            }
+                        }
+                        if (block.priority == 1 && l == 1) {
+                            areaBiglietteriaDedicata += (t.next - t.current) * number;
+                            Block passenger_served = Queues.dequeue(block.priority);
+                            s=findOne(event, MMValues.SERVER_BIGLIETTERIA + 1,MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO);
+                            service = getServiceBigl(r);
+                            sum[s].service += service;
+                            sum[s].served++;
+                            event[s].t = t.current + service;
+                            event[s].x = 1;
+                            event[s].priority = block.priority;
+                            event[s].passenger_type = block.type;
+                            number_queues[event[s].priority] -= 1;
+                            event[s].arrival_time=block.arrival_time;
+                            event[s].counter=block.number;
+                            event[s].service=service;
+                            event[s].departure= t.current + service;
+                        } else {
+
+                            l = 0;
+                            for (int z = 1; z <= MMValues.SERVER_BIGLIETTERIA; z++) {
                                 if (event[z].x == 0) {
                                     l = 1;
                                 }
                             }
-                            if (block.priority == 1 && l == 1) {
-                                areaBiglietteriaDedicata += (t.next - t.current) * number;
+                            if (l == 1) {
+                                System.out.println("\n***sono dentro else***");
                                 Block passenger_served = Queues.dequeue(block.priority);
-                                s=findOne(event, MMValues.SERVER_BIGLIETTERIA + 1,MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO);
                                 service = getServiceBigl(r);
+                                s = m.findOne(event,1,MMValues.SERVER_BIGLIETTERIA);
+                                System.out.println("SCELGO IL SERVER NUMERO:"+s);
+                                out+="\nSCELGO IL SERVER NUMERO:"+s;
                                 sum[s].service += service;
+                                System.out.println("il servizio è"+service);
+                                out+="\nil servizio è"+service;
                                 sum[s].served++;
                                 event[s].t = t.current + service;
                                 event[s].x = 1;
@@ -588,38 +596,10 @@ class Msq {
                                 event[s].counter=block.number;
                                 event[s].service=service;
                                 event[s].departure= t.current + service;
-                            } else {
-
-                                l = 0;
-                                for (int z = 1; z <= MMValues.SERVER_BIGLIETTERIA; z++) {
-                                    if (event[z].x == 0) {
-                                        l = 1;
-                                    }
-                                }
-                                if (l == 1) {
-                                    System.out.println("\n***sono dentro else***");
-                                    Block passenger_served = Queues.dequeue(block.priority);
-                                    service = getServiceBigl(r);
-                                    s = m.findOne(event,1,MMValues.SERVER_BIGLIETTERIA);
-                                    System.out.println("SCELGO IL SERVER NUMERO:"+s);
-                                    out+="\nSCELGO IL SERVER NUMERO:"+s;
-                                    sum[s].service += service;
-                                    System.out.println("il servizio è"+service);
-                                    out+="\nil servizio è"+service;
-                                    sum[s].served++;
-                                    event[s].t = t.current + service;
-                                    event[s].x = 1;
-                                    event[s].priority = block.priority;
-                                    event[s].passenger_type = block.type;
-                                    number_queues[event[s].priority] -= 1;
-                                    event[s].arrival_time=block.arrival_time;
-                                    event[s].counter=block.number;
-                                    event[s].service=service;
-                                    event[s].departure= t.current + service;
-                                }
                             }
-                        //}
-                    }
+                        }
+                    //}
+                }
                 //}
             } else if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1){ /* process an arrival at check-in*/
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].x=0; //6
