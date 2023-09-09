@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 class Node {
     int type;                       /* node=0: FF; node=1: N */
     int number;                     /* numero di job nel singolo nodo */
@@ -28,7 +30,7 @@ class Area {
 public class ModelloIniziale {
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
-    static double STOP  = 2000.0;          /* terminal (close the door) time */
+    static double STOP  = 20.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
     static double LAMBDA;
@@ -40,9 +42,21 @@ public class ModelloIniziale {
     static int[] number_queues={0,0};
     static double sarrival = START;
     static  Node [] nodes = new Node [NODES];
+
     static int ya=0;
     public static void main(String[] args) {
-
+        double tBigliett = 0.0;
+        double tBigliettD = 0.0;
+        double tCheckIn = 0.0;
+        double tCheckInD = 0.0;
+        double tScann = 0.0;
+        double tScannD = 0.0;
+        double tSecur = 0.0;
+        double tSecurD = 0.0;
+        double tSecur2 = 0.0;
+        double tSecur2D = 0.0;
+        double tGate = 0.0;
+        double tGateD = 0.0;
         long index = 0;                  /* used to count departed jobs         */
         long number = 0;                  /* number in the node                  */
 
@@ -861,6 +875,92 @@ public class ModelloIniziale {
             System.out.println("Time next: " + t.next);
             System.out.println("\n");*/
 
+        }
+        DecimalFormat f = new DecimalFormat("###0.00");
+        DecimalFormat g = new DecimalFormat("###0.000");
+        System.out.println("\nthe server statistics are:\n");
+        System.out.println("    server     utilization     avg service      share");
+        for (s = 1+1; s <= 1+Values.SERVERS_BIGLIETTERIA; s++) {
+            if (event[s].t > tBigliett) {
+                tBigliett = event[s].t;
+            }
+        }
+        for (s = 1+1; s <= 1+Values.SERVERS_BIGLIETTERIA; s++) {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tBigliett) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for (s = 1+Values.SERVERS_BIGLIETTERIA+1; s <=1+Values.SERVERS_BIGLIETTERIA+ Values.SERVERS_DEDICATO_BIGLIETTERIA; s++) {
+            if (event[s].t > tBigliettD) {
+                tBigliettD = event[s].t;
+            }
+        }
+        for (s = 1+Values.SERVERS_BIGLIETTERIA+1; s <=1+Values.SERVERS_BIGLIETTERIA+ Values.SERVERS_DEDICATO_BIGLIETTERIA; s++) {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tBigliettD) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN; s++) {
+            if (event[s].t > tCheckIn) {
+                tCheckIn = event[s].t;
+            }
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN; s++) {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tCheckIn) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for ( s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_CHECK_IN; s++
+        ) {
+            if (event[s].t > tCheckInD) {
+                tCheckInD = event[s].t;
+            }
+        }
+        for ( s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_CHECK_IN; s++
+        ) {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tCheckInD) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++)
+         {
+            if (event[s].t > tScann) {
+                tScann = event[s].t;
+            }
+        }
+        for ( s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++)
+         {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tScann) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for ( s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++)
+        {
+            if (event[s].t > tScannD) {
+                tScannD = event[s].t;
+            }
+        }
+        for ( s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2; s++)
+        {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tScannD) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tBigliett);
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + Values.SERVERS_SECURITY; s++)
+        {
+            if (event[s].t > tSecur) {
+                tSecur = event[s].t;
+            }
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY + Values.SERVERS_SECURITY; s++)
+        {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tSecur) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tSecur);
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY; s++)
+        {
+            if (event[s].t > tSecurD) {
+                tSecurD = event[s].t;
+            }
+        }
+        for (s = 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + 1; s <= 1 + Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2 + Values.SERVERS_SCANSIONE_CARTA * 2 + Values.SERVERS_CHECK_IN + Values.SERVER_DEDICATO_CHECK_IN + Values.SERVER_SCANSIONE_CARTA_DEDICAT0 * 2 + 2 + Values.SERVERS_DEDICATI_SECURITY; s++)
+        {
+            System.out.print("       " + s + "          " + g.format(sum[s].service / tSecurD) + "            ");
+            System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index)+ "         "+tSecurD);
         }
     }
 
