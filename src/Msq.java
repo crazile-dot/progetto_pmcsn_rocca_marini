@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.lang.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.*;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ class MsqEvent{
     public double arrival_time;                     /* the next-event list    */
     public double departure;
     public double service;
-    public double service_in_time;
     double t;                         /*   next event time      */
     int    x;                         /*   event status, 0 or 1 */
     int priority;                   // frequent flyer= 1 ; normale=0
@@ -30,12 +30,17 @@ class MsqEvent{
 
 class Msq {
     static double START   = 0.0;            /* initial (open the door)        */
-    static double STOP    = 10.0;        /* terminal (close the door) time  20000.0; */
+    static double STOP    = 1000000.0;        /* terminal (close the door) time  20000.0; */
     static int    SERVERS = 4;              /* number of servers              */
+
+    /* per la simulazione ad orizzonte infinito */
+    static int maxArrival = InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches;
+    static int simulation = 1;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
+    static int jobCounter = 0;
 
     static double LAMBDA;
     static double SERVICE;
-    static double fasciaOraria = MMValues.fasciaOraria1;
+    static double fasciaOraria = MMValues.fasciaOraria3;
 
     static int SERVER_DEDICATO=1; /* SERVER DEDICATO per i frequent flyers */
     static double sarrival = START;
@@ -142,8 +147,6 @@ class Msq {
 
         MsqT t = new MsqT();
 
-        Path fileName = Path.of(
-                "C:\\Users\\Adriano\\Desktop\\output.txt");
         String out = "";
 
         t.current    = START;
@@ -475,11 +478,23 @@ class Msq {
             t.current = t.next;                            /* advance the clock*/
 
             if (e == 0) {   /* process an arrival*/
+
+                if (simulation == 0) { } /* simulazione spenta */
+                else if (simulation == 1){
+                    if (maxArrival > 1) {   /* simulazione orizzonte infinito */
+                        maxArrival--;
+                    }
+                    else {
+                        event[0].x = 0;
+                    }
+                } else if (simulation == 2) {  /* simulazione orizzonte finito */
+
+                }
                 number++;
+                jobCounter++;
                 event[0].t = getArrival(r);
                 if (event[0].t > STOP)
                     event[0].x = 0;
-
                 r.selectStream(4);
                 double rndB = r.random();
                 if (rndB > MMValues.noTktNPercentage + MMValues.noTktFFPercentage) {
@@ -536,8 +551,8 @@ class Msq {
                     System.out.println("il tipo di passeggero è:" + event[0].passenger_type);
                     Block block = new Block(event[0]);
                     counterBigl++;
-                    block.number=counterBigl;
-                    block.arrival_time=t.current;
+                    block.number = counterBigl;
+                    block.arrival_time = t.current;
                     Queues.enqueue(block.priority, block);  // enqueue the current arrival into the respective queue defined by 'priority'
                     number_queues[event[0].priority] += 1;// incremento temporaneamente il numero dei job nella coda di appartenenza
                     //number++; // incremento numero dei job nel sistema
@@ -545,61 +560,62 @@ class Msq {
                     /*event[0].t = getArrival(r);
                     if (event[0].t > STOP)
                         event[0].x = 0;*/
-                   // if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
-                        int l = 0;
-                        for (int z = MMValues.SERVER_BIGLIETTERIA + 1; z <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO; z++) {
+                    // if (number_nodes[0] <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO) {
+                    int l = 0;
+                    for (int z = MMValues.SERVER_BIGLIETTERIA + 1; z <= MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO; z++) {
+                        if (event[z].x == 0) {
+                            l = 1;
+                        }
+                    }
+                    if (block.priority == 1 && l == 1) {
+                        areaBiglietteriaDedicata += (t.next - t.current) * number;
+                        Block passenger_served = Queues.dequeue(block.priority);
+                        s = findOne(event, MMValues.SERVER_BIGLIETTERIA + 1, MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO);
+                        service = getServiceBigl(r);
+                        sum[s].service += service;
+                        sum[s].served++;
+                        event[s].t = t.current + service;
+                        event[s].x = 1;
+                        event[s].priority = block.priority;
+                        event[s].passenger_type = block.type;
+                        number_queues[event[s].priority] -= 1;
+                        event[s].arrival_time = block.arrival_time;
+                        event[s].counter = block.number;
+                        event[s].service = service;
+                        event[s].departure = t.current + service;
+                    } else {
+
+                        l = 0;
+                        for (int z = 1; z <= MMValues.SERVER_BIGLIETTERIA; z++) {
                             if (event[z].x == 0) {
                                 l = 1;
                             }
                         }
-                        if (block.priority == 1 && l == 1) {
-                            areaBiglietteriaDedicata += (t.next - t.current) * number;
+                        if (l == 1) {
+                            System.out.println("\n***sono dentro else***");
                             Block passenger_served = Queues.dequeue(block.priority);
-                            s=findOne(event, MMValues.SERVER_BIGLIETTERIA + 1,MMValues.SERVER_BIGLIETTERIA + MMValues.SERVER_BIGLIETTERIA_DEDICATO);
                             service = getServiceBigl(r);
+                            s = m.findOne(event, 1, MMValues.SERVER_BIGLIETTERIA);
+                            System.out.println("SCELGO IL SERVER NUMERO:" + s);
+                            out += "\nSCELGO IL SERVER NUMERO:" + s;
                             sum[s].service += service;
+                            System.out.println("il servizio è" + service);
+                            out += "\nil servizio è" + service;
                             sum[s].served++;
                             event[s].t = t.current + service;
                             event[s].x = 1;
                             event[s].priority = block.priority;
                             event[s].passenger_type = block.type;
                             number_queues[event[s].priority] -= 1;
-                            event[s].arrival_time=block.arrival_time;
-                            event[s].counter=block.number;
-                            event[s].service=service;
-                            event[s].departure= t.current + service;
-                        } else {
-
-                            l = 0;
-                            for (int z = 1; z <= MMValues.SERVER_BIGLIETTERIA; z++) {
-                                if (event[z].x == 0) {
-                                    l = 1;
-                                }
-                            }
-                            if (l == 1) {
-                                System.out.println("\n***sono dentro else***");
-                                Block passenger_served = Queues.dequeue(block.priority);
-                                service = getServiceBigl(r);
-                                s = m.findOne(event,1,MMValues.SERVER_BIGLIETTERIA);
-                                System.out.println("SCELGO IL SERVER NUMERO:"+s);
-                                out+="\nSCELGO IL SERVER NUMERO:"+s;
-                                sum[s].service += service;
-                                System.out.println("il servizio è"+service);
-                                out+="\nil servizio è"+service;
-                                sum[s].served++;
-                                event[s].t = t.current + service;
-                                event[s].x = 1;
-                                event[s].priority = block.priority;
-                                event[s].passenger_type = block.type;
-                                number_queues[event[s].priority] -= 1;
-                                event[s].arrival_time=block.arrival_time;
-                                event[s].counter=block.number;
-                                event[s].service=service;
-                                event[s].departure= t.current + service;
-                            }
+                            event[s].arrival_time = block.arrival_time;
+                            event[s].counter = block.number;
+                            event[s].service = service;
+                            event[s].departure = t.current + service;
                         }
+                    }
                     //}
                 }
+
                 //}
             } else if(e==MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1){ /* process an arrival at check-in*/
                 event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+1].x=0; //6
@@ -732,8 +748,6 @@ class Msq {
                 if (number_nodes[k] <= 1) {
 
                     if( event[e].x==0  ){
-
-
                         service = getServiceScann(r);
                         s = m.findOne_controllo(e);
                         sum[s].service += service;
@@ -1168,7 +1182,8 @@ class Msq {
                     number_nodes[k]--;
                     if(number_nodes[k]>0 ) {
 
-                        Block block = new Block(Queues_checkin.dequeue(0));
+                        //Block block = new Block(Queues_checkin.dequeue(0));
+                        Block block = new Block(event[s]);
                         service = m.getServiceScann(r);
                         sum[s].service += service;
                         sum[s].served++;
@@ -1645,107 +1660,310 @@ class Msq {
             System.out.print("       " + s + "          " + g.format(sum[s].service / tSecur2) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
+
+        Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
+        Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
+        Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
+        Path waitCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinN.txt");
+        Path waitScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerFF.txt");
+        Path waitScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerN.txt");
+        Path waitSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityFF.txt");
+        Path waitSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityN.txt");
+        Path waitSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2FF.txt");
+        Path waitSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2N.txt");
+        Path waitImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoFF.txt");
+        Path waitImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoN.txt");
+
+        Path responseBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaFF.txt");
+        Path responseBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaN.txt");
+        Path responseCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinFF.txt");
+        Path responseCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinN.txt");
+        Path responseScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerFF.txt");
+        Path responseScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerN.txt");
+        Path responseSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityFF.txt");
+        Path responseSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityN.txt");
+        Path responseSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2FF.txt");
+        Path responseSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2N.txt");
+        Path responseImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoFF.txt");
+        Path responseImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoN.txt");
+
+        out = "";
         System.out.println("*********************************");
+        double summa = 0.0;
         for (s=0; s<= ResponseTimeFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeFF.get(s));
-
+            out += ResponseTimeFF.get(s)+"\n";
+            summa += ResponseTimeFF.get(s);
         }
+        double meanBiglRespFF = summa/ResponseTimeFF.size();
+        Files.writeString(responseBiglietteriaFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeN.get(s));
+            out += ResponseTimeN.get(s)+"\n";
+            summa += ResponseTimeN.get(s);
         }
+        double meanRespBiglN = summa/ResponseTimeN.size();
+        Files.writeString(responseBiglietteriaN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInFF.get(s));
+            out += ResponseTimeCheckInFF.get(s)+"\n";
+            summa += ResponseTimeCheckInFF.get(s);
         }
+        double meanRespCheckFF = summa/ResponseTimeCheckInFF.size();
+        Files.writeString(responseCheckinFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInN.get(s));
+            out += ResponseTimeCheckInN.get(s)+"\n";
+            summa += ResponseTimeCheckInN.get(s);
         }
+        double meanRespCheckN = summa/ResponseTimeCheckInN.size();
+        Files.writeString(responseCheckinN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityN.get(s));
+            out += ResponseTimeSecurityN.get(s)+"\n";
+            summa += ResponseTimeSecurityN.get(s);
         }
+        double meanRespSecN = summa/ResponseTimeSecurityN.size();
+        Files.writeString(responseSecurityN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityFF.get(s));
+            out += ResponseTimeSecurityFF.get(s)+"\n";
+            summa += ResponseTimeSecurityFF.get(s);
         }
+        double meanRespSecFF = summa/ResponseTimeSecurityFF.size();
+        Files.writeString(responseSecurityFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
+            out += ResponseTimeImbarcoFF.get(s)+"\n";
+            summa += ResponseTimeImbarcoFF.get(s);
         }
+        double meanRespImbFF = summa/ResponseTimeImbarcoFF.size();
+        Files.writeString(responseImbarcoFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoN.get(s));
+            out += ResponseTimeImbarcoN.get(s)+"\n";
+            summa += ResponseTimeImbarcoN.get(s);
         }
+        double meanRespImbN = summa/ResponseTimeImbarcoN.size();
+        Files.writeString(responseImbarcoN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            out += ResponseTimeSecurityAppN.get(s)+"\n";
+            summa += ResponseTimeSecurityAppN.get(s);
         }
+        double meanRespSecAppN = summa/ResponseTimeSecurityAppN.size();
+        Files.writeString(responseSecurity2N, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppFF.get(s));
+            out += ResponseTimeSecurityAppFF.get(s)+"\n";
+            summa += ResponseTimeSecurityAppFF.get(s);
         }
+        double meanRespSecAppFF = summa/ResponseTimeSecurityAppFF.size();
+        Files.writeString(responseSecurity2FF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaN.get(s));
-
-        }  System.out.println("*********************************");
+            out += ResponseTimeCartaN.get(s)+"\n";
+            summa += ResponseTimeCartaN.get(s);
+        }
+        double meanRespCartaN = summa/ResponseTimeCartaN.size();
+        Files.writeString(responseScannerN, out);
+        out = "";
+        summa = 0.0;
+        System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaFF.get(s));
+            out += ResponseTimeCartaFF.get(s)+"\n";
+            summa += ResponseTimeCartaFF.get(s);
         }
+        double meanRespCartaFF = summa/ResponseTimeCartaFF.size();
+        Files.writeString(responseScannerFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         System.out.println("*********************************");
         for (s=0; s<= WaitCartaFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaFF.get(s));
-
+            double value = WaitCartaFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitCartaFF = summa/WaitCartaFF.size();
+        Files.writeString(waitScannerFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCartaN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaN.get(s));
-
+            double value = WaitCartaN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitCartaN = summa/WaitCartaN.size();
+        Files.writeString(waitScannerN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitFF.get(s));
-
+            double value = WaitFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitBiglFF = summa/WaitFF.size();
+        Files.writeString(waitBiglietteriaFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitN.get(s));
+            double value = WaitN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitBiglN = summa/WaitN.size();
+        Files.writeString(waitBiglietteriaN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCheckInFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInFF.get(s));
+            double value = WaitCheckInFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitCheckFF = summa/WaitCheckInFF.size();
+        Files.writeString(waitCheckinFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCheckInN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInN.get(s));
+            double value = WaitCheckInN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitCheckN = summa/WaitCheckInN.size();
+        Files.writeString(waitCheckinN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityFF.get(s));
+            double value = WaitSecurityFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitSecFF = summa/WaitSecurityFF.size();
+        Files.writeString(waitSecurityFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityN.get(s));
+            double value = WaitSecurityN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitSecN = summa/WaitSecurityN.size();
+        Files.writeString(waitSecurityN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitImbarcoFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoFF.get(s));
+            double value = WaitImbarcoFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitImbFF = summa/WaitImbarcoFF.size();
+        Files.writeString(waitImbarcoFF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitImbarcoN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoN.get(s));
+            double value = WaitImbarcoN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitImbN = summa/WaitImbarcoN.size();
+        Files.writeString(waitImbarcoN, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityAppFF.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppFF.get(s));
+            double value = WaitSecurityAppFF.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitSecAppFF = summa/WaitSecurityAppFF.size();
+        Files.writeString(waitSecurity2FF, out);
+        out = "";
+        summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityAppN.size()-1; s++){
             System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppN.get(s));
+            double value = WaitSecurityAppN.get(s);
+            if (value < 0)
+                value = 0.0;
+            out += value+"\n";
+            summa += value;
         }
+        double meanWaitSecAppN = summa/WaitSecurityAppN.size();
+        Files.writeString(waitSecurity2N, out);
         System.out.println("*********************************");
         System.out.println("*********************************");
         int q=1;
@@ -1801,6 +2019,32 @@ class Msq {
         System.out.println("La media servizio controllo approfondito è:"+(tempo/count));
 
 
+        System.out.println("Tempo di risposta medio biglietteria FF: " + meanBiglRespFF);
+        System.out.println("Tempo di risposta medio biglietteria N: " + meanRespBiglN);
+        System.out.println("Tempo di risposta medio check in FF: " + meanRespCheckFF);
+        System.out.println("Tempo di risposta medio check in N: " + meanRespCheckN);
+        System.out.println("Tempo di risposta medio scanner FF: " + meanRespCartaFF);
+        System.out.println("Tempo di risposta medio scanner N: " + meanRespCartaN);
+        System.out.println("Tempo di risposta medio security FF: " + meanRespSecFF);
+        System.out.println("Tempo di risposta medio security N: " + meanRespSecN);
+        System.out.println("Tempo di risposta medio securityApp FF: " + meanRespSecAppFF);
+        System.out.println("Tempo di risposta medio securityApp N: " + meanRespSecAppN);
+        System.out.println("Tempo di risposta medio imbarco FF: " + meanRespImbFF);
+        System.out.println("Tempo di risposta medio imbarco N: " + meanRespImbN);
+
+        System.out.println("Tempo di attesa medio biglietteria FF: " + meanWaitBiglFF);
+        System.out.println("Tempo di attesa medio biglietteria N: " + meanWaitBiglN);
+        System.out.println("Tempo di attesa medio check in FF: " + meanWaitCheckFF);
+        System.out.println("Tempo di attesa medio check in FF: " + meanWaitCheckN);
+        System.out.println("Tempo di attesa medio scanner FF: " + meanWaitCartaFF);
+        System.out.println("Tempo di attesa medio scanner N: " + meanWaitCartaN);
+        System.out.println("Tempo di attesa medio security FF: " + meanWaitSecFF);
+        System.out.println("Tempo di attesa medio security N: " + meanWaitSecN);
+        System.out.println("Tempo di attesa medio securityApp FF: " + meanWaitSecAppFF);
+        System.out.println("Tempo di attesa medio securityApp N: " + meanWaitSecAppN);
+        System.out.println("Tempo di attesa medio imbarco FF: " + meanWaitImbFF);
+        System.out.println("Tempo di attesa medio imbarco N: " + meanWaitImbN);
+
         System.out.println(numberBigl);
         System.out.println(numberBiglDed);
         System.out.println(numberCheck);
@@ -1836,6 +2080,12 @@ class Msq {
             System.out.print("       " + s + "          " + g.format(sum[s].service / t.current) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }*/
+
+        System.out.println("\n");
+        System.out.println(number == maxArrival);
+        System.out.println(maxArrival);
+        System.out.println(number);
+        System.out.println(jobCounter);
         System.out.println("");
 
 

@@ -1,17 +1,23 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class InfiniteHorizonBatchSimulation {
 
     static final double LOC = 0.95;    /* level of confidence,        */
-    static int batchSize = 32;
-    //static int numBatches = 64;
+    static int batchSize = 32;   //b
+    static int numBatches = 64;   //k
+    static Path batchMeansFile = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\batches.txt");
+
 
     public static void main(String[] args) throws IOException {
         String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\prova.txt"; // Sostituisci con il percorso del tuo file di dati
 
         Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
+
+        String out = "";
 
         //generateRandomValuesAndSaveToFile(batchSize*numBatches, dataFilePath);
         ArrayList<Double> data = new ArrayList<>();
@@ -71,11 +77,13 @@ public class InfiniteHorizonBatchSimulation {
         for (int k = 1; k < batches.length; k++) {
             double mean = calculateAverage(batches[k]);
             batchMeans[k] = mean;
+            out += mean+"\n";
         }
+        Files.writeString(batchMeansFile, out);
 
-        //autocorrelation(batchMeans);
-        System.out.println("numBatches = " + numBatches);
-        estimate(batchMeans);
+        autocorrelation(batchMeans);
+        //System.out.println("numBatches = " + numBatches);
+        //estimate(batchMeans);
     }
 
     public static double calculateAverage(double[] values) {
