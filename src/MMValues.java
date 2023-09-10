@@ -1,13 +1,13 @@
 public class MMValues {
-    public static int SERVER_BIGLIETTERIA=9;
-    public static int SERVER_BIGLIETTERIA_DEDICATO=3;
-    public static int SERVER_CHECK_IN=35;
-    public static int SERVER_CHECK_DEDICATO=10;
+    public static int SERVER_BIGLIETTERIA=5;
+    public static int SERVER_BIGLIETTERIA_DEDICATO=2;
+    public static int SERVER_CHECK_IN=10;
+    public static int SERVER_CHECK_DEDICATO=3;
     public static int SERVER_CARTA_IMBARCO=4;
     public static int SERVER_CARTA_IMBARCO_DEDICATO=2;
-    public static int SERVER_SECURITY=12;
-    public static int SERVER_SECURITY_DEDICATO=4;
-    public static int SERVER_IMBARCO=6;
+    public static int SERVER_SECURITY=6;
+    public static int SERVER_SECURITY_DEDICATO=2;
+    public static int SERVER_IMBARCO=4;
     public static int SERVER_IMBARCO_DEDICATO=2;
     public static int SERVER_CONT_APP=2;
 
@@ -29,7 +29,7 @@ public class MMValues {
     public static double arrivalFascia4 = 67.03333;
     public static double arrivalFascia5 = 33.51667;
 
-    public static double FFPercentage = 0.50;
+    public static double FFPercentage = 0.21;
     public static double NPercentage = 0.79;
     public static double onlineTktFFPercentage = 0.2058;
     public static double onlineTktNPercentage = 0.7742;
