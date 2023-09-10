@@ -60,7 +60,8 @@ public class ModelloIniziale {
     static int simulation = 1;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
     static int jobCounter = 0;
     static int flag = -1;
-
+    static double[] risposta_globali= new double[4096];
+    static int job=0;
     static double LAMBDA;
     static double SERVICE = 2;
     static double fasciaOraria = MMValues.fasciaOraria3;
@@ -269,7 +270,7 @@ public class ModelloIniziale {
 
             if (e == 0 || e == 1) {
 
-
+                job++;
                 if (simulation == 0) { } /* simulazione spenta */
                 else if (simulation == 1){
                     if (maxArrival > 1) { /* simulazione orizzonte infinito */
@@ -292,6 +293,7 @@ public class ModelloIniziale {
                     event[0].t = getArrival(r);
                     event[0].x=1;
                     event[1].x=0;
+
                     //System.out.println("Primo arrivo normale: " + event[0].t);
                     if (event[0].t > STOP) {
                         event[0].x = 0;
@@ -322,6 +324,7 @@ public class ModelloIniziale {
                             event[i].t = t.current;
                             event[i].priority = 0;
                             event[i].passenger_type = 0;
+                            event[i].job=job;
                         } else {
                             int i = find_best_server_dedicato();
                             System.out.println("********STO IMPOSTANDO QUESTO VALORE DEDICATO ***********");
@@ -329,6 +332,7 @@ public class ModelloIniziale {
                             event[i].t = t.current;
                             event[i].priority = 1;
                             event[i].passenger_type = 1;
+                            event[i].job=job;
                         }
                     }
                     else{
@@ -341,12 +345,14 @@ public class ModelloIniziale {
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].t = t.current;
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].priority = 0;
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].passenger_type = 0;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 1].job=job;
                         } else {
                             System.out.println("********STO IMPOSTANDO QUESTO VALORE DEDICATO CHECK IN***********");
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].x = 1;
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].t = t.current;
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].priority = 1;
                             event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].passenger_type = 1;
+                            event[1+Values.SERVERS_BIGLIETTERIA + Values.SERVERS_DEDICATO_BIGLIETTERIA + 2].job=job;
                         }
                     }
                 }else{
@@ -356,7 +362,7 @@ public class ModelloIniziale {
                         nodes[1].number++;
                         block = new Block(event[0]);
                         numb_wait_bigl++;
-
+                        block.job=job;
                         block.arrival_time=t.current;
                         Queues_biglietteria.enqueue(0, block);
                     } else {
@@ -364,7 +370,7 @@ public class ModelloIniziale {
                         nodes[0].number++;
                        block = new Block(event[1]);
                         numb_wait_biglD++;
-
+                        block.job=job;
                         block.arrival_time=t.current;
                         Queues_biglietteriaD.enqueue(0, block);
                     }
@@ -386,6 +392,8 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].block=block;
+                        event[s].job=job;
                     } else if (e == 0 && nodes[1].number <= Values.SERVERS_BIGLIETTERIA) {
                         numb_wait_bigl--;
 
@@ -400,6 +408,8 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].block=block;
+                        event[s].job=job;
                     }
 
 
@@ -462,6 +472,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
 
                 }
 
@@ -490,6 +502,7 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
                 }
             }
             else if(e==1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+2){
@@ -504,6 +517,7 @@ public class ModelloIniziale {
 
                 //idx++????
                 if(nodes[9].number==1){
+                    Queue_carta_ded2.dequeue(0);
                     numb_wait_cartaD--;
 
                     singleService = getServiceScann(r);
@@ -515,6 +529,10 @@ public class ModelloIniziale {
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].counter=block.number;
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service=singleService;
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].departure= t.current + singleService;
+                    event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].departure= t.current + singleService;
+                    event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].job=block.job;
+
+
                 }
             }
             else if (e==1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+1){
@@ -530,6 +548,7 @@ public class ModelloIniziale {
                 //idx++????
                 if(nodes[4].number==1){
                     numb_wait_cartaD--;
+                    Queue_carta_ded1.dequeue(0);
 
                     singleService = getServiceScann(r);
                     sum[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].service += singleService;
@@ -540,6 +559,8 @@ public class ModelloIniziale {
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].counter=block.number;
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].service=singleService;
                     event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].departure= t.current + singleService;
+                    event[1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA+1].job=block.job;
+
                 }
             }
             else if(e>=1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+1 && e<=1+Values.SERVERS_DEDICATO_BIGLIETTERIA+Values.SERVERS_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0+Values.SERVERS_SCANSIONE_CARTA){
@@ -593,6 +614,8 @@ public class ModelloIniziale {
                     event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].counter=block.number;
                     event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].service=singleService;
                     event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].departure= t.current + singleService;
+                    event[e+Values.SERVERS_SCANSIONE_CARTA+Values.SERVER_SCANSIONE_CARTA_DEDICAT0].job=block.job;
+
 
                 }
             }
@@ -620,6 +643,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
                 }
             }
             else if(e==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2){
@@ -647,6 +672,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
                 }
             }
             else if (e==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1) {
@@ -674,6 +701,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
                 }
 
             }
@@ -699,6 +728,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
                 }
             }
             else if(e==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2){
@@ -743,6 +774,8 @@ public class ModelloIniziale {
                     event[s].counter=block.number;
                     event[s].service=multiService;
                     event[s].departure= t.current + multiService;
+                    event[s].job=block.job;
+
 
                 }
             }
@@ -757,9 +790,12 @@ public class ModelloIniziale {
                     nodes[1].index++;
                     event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+1].x=1;
                     event[ 1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+1].t=t.current;
+                    event[ 1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+1].job=event[s].job;
+
                     event[s].departure=t.current;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeN.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitN.add(WaitingTime);
 
@@ -773,6 +809,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else
                         event[s].x = 0;
                 }
@@ -780,11 +817,13 @@ public class ModelloIniziale {
                     event[s].departure=t.current;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitFF.add(WaitingTime);
                     System.out.println("\n*** Sto processando una departure del server dedicato***");
                     event[ 1 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2].x=1;
                     event[1 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2].t=t.current;
+                    event[1 + Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2].job=event[s].job;
                     nodes[0].number--;
                     nodes[0].index++;
                     if (nodes[0].number >= Values.SERVERS_DEDICATO_BIGLIETTERIA) {
@@ -797,6 +836,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -808,12 +848,14 @@ public class ModelloIniziale {
                     nodes[2].index--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCheckInFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCheckInFF.add(WaitingTime);
                     int k =find_best_server_dedicato();
                     System.out.println("Il numero dell'evento è:"+k);
                     event[k].x=1;
                     event[k].t=t.current;
+                    event[k].job=event[s].job;
                     if (nodes[2].number >= Values.SERVER_DEDICATO_CHECK_IN) {
                         Block block=new Block(Queues_checkinD.dequeue(0));
                         multiService = getServiceChk(r);
@@ -824,6 +866,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -836,11 +879,13 @@ public class ModelloIniziale {
                     nodes[3].index--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCheckInN.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCheckInN.add(WaitingTime);
                     int server=find_best_server();
                     event[server].x=1;
                     event[server].t=t.current;
+                    event[server].job=event[s].job;
                     if (nodes[3].number >= Values.SERVERS_CHECK_IN) {
                         Block block=new Block(Queues_checkin.dequeue(0));
 
@@ -852,6 +897,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
 
                     } else {
                         event[s].x = 0;
@@ -862,8 +908,10 @@ public class ModelloIniziale {
                     System.out.println("\n*** Sto processando una departure del server dedicato carta imbarco***");
                     event[e+1+Values.SERVERS_SCANSIONE_CARTA+1].x=1;
                     event[e+1+Values.SERVERS_SCANSIONE_CARTA+1].t=t.current;
+                    event[e+1+Values.SERVERS_SCANSIONE_CARTA+1].job=event[s].job;;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaFF.add(WaitingTime);
                     nodes[4].number--;
@@ -878,6 +926,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=singleService;
                         event[s].departure= t.current + singleService;
+                        event[s].job=block.job;
 
                     } else {
                         event[s].x = 0;
@@ -887,8 +936,10 @@ public class ModelloIniziale {
                    // number--;
                     event[e+Values.SERVERS_SCANSIONE_CARTA+1].x=1;
                     event[e+Values.SERVERS_SCANSIONE_CARTA+1].t=t.current;
+                    event[e+Values.SERVERS_SCANSIONE_CARTA+1].job=event[s].job;;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaFF.add(WaitingTime);
                     System.out.println("\n*** Sto processando una departure del server dedicato carta imbarco***");
@@ -904,6 +955,7 @@ public class ModelloIniziale {
                         event[s].counter=block.number;
                         event[s].service=singleService;
                         event[s].departure= t.current + singleService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -912,10 +964,13 @@ public class ModelloIniziale {
                 else if(s>=1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA+1 && s<=1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2){
                     event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2].x=1;
                     event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2].t=t.current;
+                    event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2].job=event[s].job;;
+
                     System.out.println("\n*** Sto processando una departure del server  carta imbarco***");
                    // number--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaN.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaN.add(WaitingTime);
                     int nu=find_number_node(e);
@@ -926,18 +981,22 @@ public class ModelloIniziale {
                         if(s==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA+1){
                             Block block=new Block(Queue_carta1.dequeue(0));
                             event[s].arrival_time=block.arrival_time;
+                            event[s].job=block.job;
                         }
                         if(s==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA+2){
                             Block block=new Block(Queue_carta2.dequeue(0));
                             event[s].arrival_time=block.arrival_time;
+                            event[s].job=block.job;
                         }
                         if(s==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA+3){
                             Block block=new Block(Queue_carta3.dequeue(0));
                             event[s].arrival_time=block.arrival_time;
+                            event[s].job=block.job;
                         }
                         if(s==1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA+4){
                             Block block=new Block(Queue_carta4.dequeue(0));
                             event[s].arrival_time=block.arrival_time;
+                            event[s].job=block.job;
                         }
                         singleService = getServiceScann(r);
                         sum[s].service += singleService;
@@ -958,6 +1017,7 @@ public class ModelloIniziale {
                     nodes[10].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeSecurityFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitSecurityFF.add(WaitingTime);
                     r.selectStream(10 + idx);
@@ -966,11 +1026,13 @@ public class ModelloIniziale {
                     if(rnd>(1-MMValues.imbarcoPerc)){
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].x=1;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].t=t.current;
+                        event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].job=event[s].job;;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].priority=1;
                     }
                     else {
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].x=1;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].t=t.current;
+                        event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].job=event[s].job;;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].priority=event[s].priority;
                     }
                     if (nodes[10].number >= Values.SERVERS_DEDICATI_SECURITY) {
@@ -982,6 +1044,7 @@ public class ModelloIniziale {
                         event[s].arrival_time=block.arrival_time;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -991,6 +1054,7 @@ public class ModelloIniziale {
                     System.out.println("\n*** Sto processando una departure del server security***");
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeSecurityN.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitSecurityN.add(WaitingTime);
                     nodes[11].number--;
@@ -1002,6 +1066,8 @@ public class ModelloIniziale {
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].x=1;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].t=t.current;
                         event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].priority=event[s].priority;
+                        event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1].job=event[s].job;;
+
                     }
                     else {
                         r.selectStream(10 + idx);
@@ -1011,12 +1077,16 @@ public class ModelloIniziale {
                         if(rnd>0.50) {
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].x = 1;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].t = t.current;
+
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].priority=2;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].job=event[s].job;;
                         }
                         else{
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].x = 1;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].t = t.current;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].priority=0;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].job=event[s].job;;
+
                         }
 
                     }
@@ -1030,6 +1100,7 @@ public class ModelloIniziale {
                         event[s].arrival_time=block.arrival_time;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -1047,6 +1118,7 @@ public class ModelloIniziale {
                         event[s].departure=t.current;
                         double RespondeTime=event[s].departure-event[s].arrival_time;
                         ResponseTimeSecurityAppFF.add(RespondeTime);
+                        risposta_globali[job]+=RespondeTime;
                         double WaitingTime=RespondeTime-event[s].service;
                         WaitSecurityAppFF.add(WaitingTime);
                     }
@@ -1054,6 +1126,7 @@ public class ModelloIniziale {
                         event[s].departure=t.current;
                         double RespondeTime=event[s].departure-event[s].arrival_time;
                         ResponseTimeSecurityAppN.add(RespondeTime);
+                        risposta_globali[job]+=RespondeTime;
                         double WaitingTime=RespondeTime-event[s].service;
                         WaitSecurityAppN.add(WaitingTime);
                     }
@@ -1065,12 +1138,16 @@ public class ModelloIniziale {
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].t=t.current;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].priority=event[s].priority;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].passenger_type=event[s].passenger_type;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].job=event[s].job;;
+
 
                         }else{
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].x=1;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].t=t.current;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].priority=event[s].priority;
                             event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].passenger_type=event[s].passenger_type;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].job=event[s].job;;
+
 
                         }
                     }
@@ -1087,6 +1164,7 @@ public class ModelloIniziale {
                         event[s].arrival_time=block.arrival_time;
                         event[s].service=multiService;
                         event[s].departure= t.current + multiService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -1099,6 +1177,7 @@ public class ModelloIniziale {
                     nodes[13].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeImbarcoFF.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitImbarcoFF.add(WaitingTime);
 
@@ -1111,6 +1190,7 @@ public class ModelloIniziale {
                         event[s].arrival_time=block.arrival_time;
                         event[s].service=singleService;
                         event[s].departure= t.current + singleService;
+                        event[s].job=block.job;
                     } else {
                         event[s].x = 0;
                     }
@@ -1123,6 +1203,7 @@ public class ModelloIniziale {
                     nodes[14].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeImbarcoN.add(ResponseTime);
+                    risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitImbarcoN.add(WaitingTime);
                     if (nodes[14].number >= Values.SERVERS_IMBARCO) {
@@ -1139,6 +1220,7 @@ public class ModelloIniziale {
                             event[s].arrival_time=block.arrival_time;
                             event[s].service=singleService;
                             event[s].departure= t.current + singleService;
+                            event[s].job=block.job;
                        }
                        else if(number_queues[0]>0){
                             Block block = new Block(Queue_imbarco1.dequeue(0));
@@ -1152,6 +1234,7 @@ public class ModelloIniziale {
                             event[s].arrival_time=block.arrival_time;
                             event[s].service=singleService;
                             event[s].departure= t.current + singleService;
+                            event[s].job=block.job;
                         }
 
                     }
@@ -1656,7 +1739,7 @@ public class ModelloIniziale {
             tempo+=sum[s].service;
         }   System.out.println("La media servizio biglietteria è:"+(tempo/count));
 */
-
+/*
         Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
         Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
         Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
@@ -2055,6 +2138,10 @@ public class ModelloIniziale {
         System.out.println(numberContrAppDedic);*/
 
         System.out.println(jobCounter);
+        for(int poiu=0;poiu<3000;poiu++){
+            System.out.println("numero: "+poiu+"  "+risposta_globali[poiu]);
+        }
+
     }
 
 
