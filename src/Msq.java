@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.text.*;
 import java.util.ArrayList;
 
-
 class MsqT {
     double current;                   /* current time                       */
     double next;                      /* next (most imminent) event time    */
@@ -20,10 +19,12 @@ class MsqEvent{
     public double arrival_time;                     /* the next-event list    */
     public double departure;
     public double service;
+    public Block block;
     double t;                         /*   next event time      */
     int    x;                         /*   event status, 0 or 1 */
     int priority;                   // frequent flyer= 1 ; normale=0
     int passenger_type;
+    int job;
     double counter;
     int compagnia=0;
 }
@@ -36,7 +37,7 @@ class Msq {
 
     /* per la simulazione ad orizzonte infinito */
     static int maxArrival = InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches;
-    static int simulation = 0;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
+    static int simulation = 1;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
     static int jobCounter = 0;
 
     static double LAMBDA;

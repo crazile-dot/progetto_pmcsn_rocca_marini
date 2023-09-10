@@ -6,6 +6,7 @@ public class Block {
     int priority=0;
     double departure=0.0;
     int number=0;
+    int job=0;
     double arrive=0.0;
     int compagnia=0;
     Block(Block evento) {
