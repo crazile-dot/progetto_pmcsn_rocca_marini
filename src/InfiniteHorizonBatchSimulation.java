@@ -3,11 +3,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InfiniteHorizonBatchSimulation {
 
     static final double LOC = 0.95;    /* level of confidence,        */
-    static int batchSize = 32;   //b
+    static int batchSize = 64;   //b
     static int numBatches = 64;   //k
     static Path batchMeansFile = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\batches.txt");
 
@@ -92,7 +93,9 @@ public class InfiniteHorizonBatchSimulation {
         }
         Files.writeString(batchMeansFile, out);
 
-        double[] autoc = autocorrelation(batchMeans);
+        List<Double> autoc = autocorrelation(Arrays.stream(batchMeans)
+                .boxed()
+                .collect(Collectors.toList()), batchSize);
         for (double elem: autoc) {
             System.out.println(elem);
         }
@@ -204,12 +207,16 @@ public class InfiniteHorizonBatchSimulation {
         }
     }
 
-    public static double[] autocorrelation(double[] data) {
+    public static List<Double> autocorrelation(List<Double> data, int b) {
         /*int[] lags = new int[11];
         for (int l = 0; l < 11; l++) {
             lags[l] = l;
         }*/
-        double[] autocorrelation = calculateAutocorrelation(data);
+        //double[] autocorrelation = calculateAutocorrelation(data);
+
+        List<Double> autocorrelation = acs(data, b);
+
+
         //System.out.println("Batch size = " + batchSize);
         //autocorrelation[1] = 0.4;
         /*for (double elem : autocorrelation)
@@ -224,6 +231,62 @@ public class InfiniteHorizonBatchSimulation {
         }*/
         return autocorrelation;
     }
+
+    public static List<Double> acs(List<Double> batchmeansList, int b) {
+        int K = 50;  // K is the maximum lag
+        int SIZE = K + 1;
+        int i = 0;  // data point index
+        double sum = 0.0;  // sums x[i]
+        int j = 0;  // lag index
+        List<Double> hold = new ArrayList<>(SIZE);  // K + 1 most recent data points
+        int p = 0;  // points to the head of 'hold'
+        double[] cosum = new double[SIZE];  // cosum[j] sums x[i] * x[i+j]
+
+        while (i < SIZE) {  // initialize the hold array with
+            double x = batchmeansList.remove(0);  // the first K + 1 data values
+            sum += x;
+            hold.add(x);
+            i++;
+        }
+
+        if (!batchmeansList.isEmpty()) {
+            double x = batchmeansList.remove(0);
+        }
+
+        while (!batchmeansList.isEmpty()) {
+            for (j = 0; j < SIZE; j++) {
+                cosum[j] += hold.get(p) * hold.get((p + j) % SIZE);
+            }
+            double x = batchmeansList.remove(0);
+            sum += x;
+            hold.set(p, x);
+            p = (p + 1) % SIZE;
+            i++;
+
+            if (batchmeansList.isEmpty()) {
+                x = 0.0;
+            }
+        }
+        int n = i;  // the total number of data points
+
+        while (i < n + SIZE) {  // empty the circular array
+            for (j = 0; j < SIZE; j++) {
+                cosum[j] += hold.get(p) * hold.get((p + j) % SIZE);
+            }
+            hold.set(p, 0.0);
+            p = (p + 1) % SIZE;
+            i++;
+        }
+
+        double mean = sum / n;
+        List<Double> autocorrelations = new ArrayList<>(SIZE);
+        for (j = 0; j < K + 1; j++) {
+            autocorrelations.add(cosum[j] / cosum[0]);
+        }
+
+        return autocorrelations;
+    }
+
 
     //public static double[] calculateAutocorrelation(double[] data, int batchSize, int[] lags) {
         /*int dataSize = data.length;
@@ -278,7 +341,7 @@ public class InfiniteHorizonBatchSimulation {
         variance /= n;
 
         // Calcola l'autocorrelazione per ogni lag
-        for (int lag = 0; lag < 10; lag++) {
+        for (int lag = 0; lag < n; lag++) {
             double sum = 0.0;
             for (int i = 0; i < n - lag; i++) {
                 sum += (data[i] - mean) * (data[i + lag] - mean);

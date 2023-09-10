@@ -1621,7 +1621,7 @@ class Msq {
             }
             System.out.println("TEMPO iterazione:"+t.next+"\nTeMPO event:"+event[e].t);
         }
-/*
+
         DecimalFormat f = new DecimalFormat("###0.00");
         DecimalFormat g = new DecimalFormat("###0.000");
 
@@ -1691,7 +1691,7 @@ class Msq {
 
         for (s = 1; s <= SERVERS+SERVER_DEDICATO; s++)          /* adjust area to calculate *//*
             area -= sum[s].service;              /* averages for the queue   */
-/*
+
         System.out.println("  avg delay .......... =   " + f.format(area / index));
         System.out.println("  avg # in queue ..... =   " + f.format(area / t.current));
         System.out.println("\nthe server statistics are:\n");
@@ -1742,31 +1742,31 @@ class Msq {
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
 
-        Path waitBiglietteriaFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitBiglietteriaFF.txt");
-        Path waitBiglietteriaN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitBiglietteriaN.txt");
-        Path waitCheckinFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitCheckinFF.txt");
-        Path waitCheckinN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitCheckinN.txt");
-        Path waitScannerFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitScannerFF.txt");
-        Path waitScannerN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitScannerN.txt");
-        Path waitSecurityFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitSecurityFF.txt");
-        Path waitSecurityN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitSecurityN.txt");
-        Path waitSecurity2FF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitSecurity2FF.txt");
-        Path waitSecurity2N = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitSecurity2N.txt");
-        Path waitImbarcoFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitImbarcoFF.txt");
-        Path waitImbarcoN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\waitImbarcoN.txt");
+        Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
+        Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
+        Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
+        Path waitCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinN.txt");
+        Path waitScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerFF.txt");
+        Path waitScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerN.txt");
+        Path waitSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityFF.txt");
+        Path waitSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityN.txt");
+        Path waitSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2FF.txt");
+        Path waitSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2N.txt");
+        Path waitImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoFF.txt");
+        Path waitImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoN.txt");
 
-        Path responseBiglietteriaFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseBiglietteriaFF.txt");
-        Path responseBiglietteriaN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseBiglietteriaN.txt");
-        Path responseCheckinFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseCheckinFF.txt");
-        Path responseCheckinN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseCheckinN.txt");
-        Path responseScannerFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseScannerFF.txt");
-        Path responseScannerN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseScannerN.txt");
-        Path responseSecurityFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseSecurityFF.txt");
-        Path responseSecurityN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseSecurityN.txt");
-        Path responseSecurity2FF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseSecurity2FF.txt");
-        Path responseSecurity2N = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseSecurity2N.txt");
-        Path responseImbarcoFF = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseImbarcoFF.txt");
-        Path responseImbarcoN = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\responseImbarcoN.txt");
+        Path responseBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaFF.txt");
+        Path responseBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaN.txt");
+        Path responseCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinFF.txt");
+        Path responseCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinN.txt");
+        Path responseScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerFF.txt");
+        Path responseScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerN.txt");
+        Path responseSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityFF.txt");
+        Path responseSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityN.txt");
+        Path responseSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2FF.txt");
+        Path responseSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2N.txt");
+        Path responseImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoFF.txt");
+        Path responseImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoN.txt");
 
         out = "";
         System.out.println("*********************************");
