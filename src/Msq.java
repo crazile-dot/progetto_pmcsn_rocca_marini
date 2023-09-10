@@ -147,32 +147,6 @@ class Msq {
 
         MsqT t = new MsqT();
 
-        Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
-        Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
-        Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
-        Path waitCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinN.txt");
-        Path waitScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerFF.txt");
-        Path waitScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerN.txt");
-        Path waitSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityFF.txt");
-        Path waitSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityN.txt");
-        Path waitSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2FF.txt");
-        Path waitSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2N.txt");
-        Path waitImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoFF.txt");
-        Path waitImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoN.txt");
-
-        Path responseBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaFF.txt");
-        Path responseBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaN.txt");
-        Path responseCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinFF.txt");
-        Path responseCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinN.txt");
-        Path responseScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerFF.txt");
-        Path responseScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerN.txt");
-        Path responseSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityFF.txt");
-        Path responseSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityN.txt");
-        Path responseSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2FF.txt");
-        Path responseSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2N.txt");
-        Path responseImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoFF.txt");
-        Path responseImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoN.txt");
-
         String out = "";
 
         t.current    = START;
@@ -1685,6 +1659,33 @@ class Msq {
             System.out.print("       " + s + "          " + g.format(sum[s].service / tSecur2) + "            ");
             System.out.println(f.format(sum[s].service / sum[s].served) + "         " + g.format(sum[s].served / (double)index));
         }
+
+        Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
+        Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
+        Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
+        Path waitCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinN.txt");
+        Path waitScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerFF.txt");
+        Path waitScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitScannerN.txt");
+        Path waitSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityFF.txt");
+        Path waitSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurityN.txt");
+        Path waitSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2FF.txt");
+        Path waitSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitSecurity2N.txt");
+        Path waitImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoFF.txt");
+        Path waitImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitImbarcoN.txt");
+
+        Path responseBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaFF.txt");
+        Path responseBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseBiglietteriaN.txt");
+        Path responseCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinFF.txt");
+        Path responseCheckinN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseCheckinN.txt");
+        Path responseScannerFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerFF.txt");
+        Path responseScannerN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseScannerN.txt");
+        Path responseSecurityFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityFF.txt");
+        Path responseSecurityN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurityN.txt");
+        Path responseSecurity2FF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2FF.txt");
+        Path responseSecurity2N = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseSecurity2N.txt");
+        Path responseImbarcoFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoFF.txt");
+        Path responseImbarcoN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseImbarcoN.txt");
+
         out = "";
         System.out.println("*********************************");
         double summa = 0.0;
