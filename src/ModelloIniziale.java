@@ -1079,15 +1079,49 @@ public class ModelloIniziale {
                     }
                 }
                 else if (s>=1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+1 && s<=1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVERS_CHECK_IN+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI){
-                    number--;
+
                     System.out.println("\n*** Sto processando una departure del server controllo approfondito***");
                     nodes[12].number--;
                     nodes[12].index--;
-                    double ResponseTime=event[s].departure-event[s].arrival_time;
+                   /* double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeSecurityAppN.add(ResponseTime);
                     double WaitingTime=ResponseTime-event[s].service;
-                    WaitSecurityAppN.add(WaitingTime);
+                    WaitSecurityAppN.add(WaitingTime);*/
+                    if(event[s].priority==1){
+                        event[s].departure=t.current;
+                        double RespondeTime=event[s].departure-event[s].arrival_time;
+                        ResponseTimeSecurityAppFF.add(RespondeTime);
+                        double WaitingTime=RespondeTime-event[s].service;
+                        WaitSecurityAppFF.add(WaitingTime);
+                    }
+                    else{
+                        event[s].departure=t.current;
+                        double RespondeTime=event[s].departure-event[s].arrival_time;
+                        ResponseTimeSecurityAppN.add(RespondeTime);
+                        double WaitingTime=RespondeTime-event[s].service;
+                        WaitSecurityAppN.add(WaitingTime);
+                    }
+                    double rnd1 = r.random();
+                    r.selectStream(0 );
+                    if (rnd1>0.70){
+                        if(event[s].priority==1){
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].x=1;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].t=t.current;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].priority=event[s].priority;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+1].passenger_type=event[s].passenger_type;
 
+                        }else{
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].x=1;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].t=t.current;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].priority=event[s].priority;
+                            event[1+Values.SERVERS_BIGLIETTERIA+Values.SERVERS_DEDICATO_BIGLIETTERIA+2+Values.SERVER_DEDICATO_CHECK_IN+Values.SERVERS_CHECK_IN+Values.SERVER_SCANSIONE_CARTA_DEDICAT0*2+Values.SERVERS_SCANSIONE_CARTA*2+2+Values.SERVERS_SECURITY+Values.SERVERS_DEDICATI_SECURITY+1+Values.SERVERS_CONTROLLI_APPROFODNITI+2].passenger_type=event[s].passenger_type;
+
+                        }
+                    }
+                    else{
+                        number--;
+
+                    }
                     if (nodes[12].number >= Values.SERVERS_CONTROLLI_APPROFODNITI) {
                         Block block=new Block(Queue_security1.dequeue(0));
                         multiService = getService(r);
@@ -1111,6 +1145,7 @@ public class ModelloIniziale {
                     ResponseTimeImbarcoFF.add(ResponseTime);
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitImbarcoFF.add(WaitingTime);
+
                     if (nodes[13].number >= Values.SERVERS_IMBARCO_DEDICATO) {
                         Block block=new Block(Queues_imbarcoD.dequeue(0));
                         singleService = getService(r);
@@ -1398,8 +1433,17 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeSecurityAppN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA security app FF "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            System.out.println("IL TEMPO DI RISPOSTA security app N "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
             time1+=ResponseTimeSecurityAppN.get(s);
+            count++;
+        }
+        System.out.println("Il tempo di risposta medio è:"+(time1/count));
+        System.out.println("*********************************");
+        time1=0.0;
+        count=0;
+        for (s=0; s<= ResponseTimeSecurityAppFF.size()-1; s++){
+            System.out.println("IL TEMPO DI RISPOSTA security app FF "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            time1+=ResponseTimeSecurityAppFF.get(s);
             count++;
         }
         System.out.println("Il tempo di risposta medio è:"+(time1/count));
@@ -1516,6 +1560,17 @@ public class ModelloIniziale {
         }
         time1=0.0;
         System.out.println("IL COUNT DEI JOB IN security app E'"+count);
+        System.out.println("L'attesa media è:'"+(time1/count));
+   System.out.println("*********************************");
+        count=0;
+        time1=0.0;
+        for (s=0; s<= WaitSecurityAppFF.size()-1; s++){
+            System.out.println("IL TEMPO DI ATTESA security app FF "+s+"E':"+ WaitSecurityAppFF.get(s));
+            time1+=WaitSecurityAppN.get(s);
+            count++;
+        }
+        time1=0.0;
+        System.out.println("IL COUNT DEI JOB IN security app FF E'"+count);
         System.out.println("L'attesa media è:'"+(time1/count));
 
         System.out.println("*********************************");

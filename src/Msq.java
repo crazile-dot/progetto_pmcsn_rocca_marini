@@ -1470,7 +1470,7 @@ class Msq {
 //38
                     number_nodes[10]--;
                     System.out.println("*******Sto processando una departure dal server Controllo approfondito*********");
-                    r.selectStream(0 );
+
                     if(event[s].priority==1){
                         event[s].departure=t.current;
                         double RespondeTime=event[s].departure-event[s].arrival_time;
@@ -1486,6 +1486,7 @@ class Msq {
                         WaitSecurityAppN.add(WaitingTime);
                     }
                     double rnd = r.random();
+                    r.selectStream(0 );
                     if (rnd>0.70){
                         event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2].x=1;
                         event[MMValues.SERVER_BIGLIETTERIA+MMValues.SERVER_BIGLIETTERIA_DEDICATO+MMValues.SERVER_CHECK_IN+MMValues.SERVER_CHECK_DEDICATO+MMValues.SERVER_CARTA_IMBARCO*2+MMValues.SERVER_CARTA_IMBARCO_DEDICATO*2+ 3+MMValues.SERVER_SECURITY+MMValues.SERVER_SECURITY_DEDICATO+2].t=t.current;
