@@ -7,6 +7,7 @@ public class Block {
     double departure=0.0;
     int number=0;
     double arrive=0.0;
+    int compagnia=0;
     Block(Block evento) {
         this.arrival_time = evento.arrival_time;
         this.type = evento.type;
