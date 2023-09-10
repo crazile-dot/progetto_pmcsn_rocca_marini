@@ -1,13 +1,15 @@
 public class MMValues {
+
     public static int SERVER_BIGLIETTERIA=4;
     public static int SERVER_BIGLIETTERIA_DEDICATO=3;
     public static int SERVER_CHECK_IN=100;
     public static int SERVER_CHECK_DEDICATO=10;
+
     public static int SERVER_CARTA_IMBARCO=4;
     public static int SERVER_CARTA_IMBARCO_DEDICATO=2;
-    public static int SERVER_SECURITY=12;
-    public static int SERVER_SECURITY_DEDICATO=4;
-    public static int SERVER_IMBARCO=6;
+    public static int SERVER_SECURITY=6;
+    public static int SERVER_SECURITY_DEDICATO=2;
+    public static int SERVER_IMBARCO=4;
     public static int SERVER_IMBARCO_DEDICATO=2;
     public static int SERVER_CONT_APP=2;
 
