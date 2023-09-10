@@ -87,7 +87,7 @@ public class TEMP {
             line = br.readLine();
         }
 
-        double[] responses = new double[(int) (InfiniteHorizonBatchSimulation.numBatches*InfiniteHorizonBatchSimulation.batchSize*(1-MMValues.FFPercentage))];
+        double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
         for (int i = 0; i < responses.length; i++) {
             responses[i] = -1;
         }
@@ -215,7 +215,7 @@ public class TEMP {
             line = br.readLine();
         }
 
-        double[] responses = new double[(int) (InfiniteHorizonBatchSimulation.numBatches*InfiniteHorizonBatchSimulation.batchSize*MMValues.FFPercentage)];
+        double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
         for (int i = 0; i < responses.length; i++) {
             responses[i] = -1;
         }
@@ -229,6 +229,8 @@ public class TEMP {
                 responses[i] = ressponseCheckFF.get(i);
         }
         for (int i = 0; i < ressponseScannFF.size(); i++) {
+            System.out.println(ressponseScannFF.size());
+            System.out.println(responses.length);
             if (responses[i] != -1)
                 responses[i] += ressponseScannFF.get(i);
             else
@@ -258,12 +260,12 @@ public class TEMP {
                 responses[i] = responses[i/2 - 100];
             }
         }*/
-        System.out.println(responses);
 
         Path responseFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseFF.txt");
         String out = "";
         for (double elem: responses) {
-            out += elem + "\n";
+            if (elem != -1)
+                out += elem + "\n";
         }
         Files.writeString(responseFF, out);
     }

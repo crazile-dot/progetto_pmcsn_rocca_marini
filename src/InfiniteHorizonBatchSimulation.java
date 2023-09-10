@@ -9,20 +9,30 @@ public class InfiniteHorizonBatchSimulation {
     static final double LOC = 0.95;    /* level of confidence,        */
     static int batchSize = 32;   //b
     static int numBatches = 64;   //k
-    static Path batchMeansFile = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\batches.txt");
+    static Path batchMeansFile = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\batches.txt");
 
 
     public static void main(String[] args) throws IOException {
-      /*  String dataFilePath = "C:\\Users\\Adriano\\Desktop\\prova.txt"; // Sostituisci con il percorso del tuo file di dati
+
+        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\valori\\responseN.txt"; // Sostituisci con il percorso del tuo file di dati
 
         Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
-
+        System.out.println("DIMENSIONE QUEUE: " + responseTimes.size());
+        /*ArrayList<Double> response = new ArrayList<>();
+        for (Double d: responseTimes) {
+            if (d == null) {
+                System.out.println("NULL");
+            } else {
+                response.add(d);
+            }
+        }
+        System.out.println("DIMENSIONE ARRAY: " + response.size());*/
         String out = "";
 
         //generateRandomValuesAndSaveToFile(batchSize*numBatches, dataFilePath);
-        ArrayList<Double> data = new ArrayList<>();
+        /*ArrayList<Double> data = new ArrayList<>();
         String line = "";
-        //BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Adriano\\Desktop\\output.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\output.txt"));
         line = br.readLine();
         while (line != null) {
             StringTokenizer tokenizer = new StringTokenizer(line);
@@ -30,11 +40,11 @@ public class InfiniteHorizonBatchSimulation {
                 data.add(Double.parseDouble(tokenizer.nextToken()));
             }
             line = br.readLine();
-        }
+        }*/
         // Inizia la simulazione a orizzonte infinito
-        int size = data.size();
+        int size = responseTimes.size();
         int batchIndex = 0;
-        int numBatches = size/batchSize;
+        //int numBatches = size/batchSize;
         int i = 0;
         double [] batch;
         double [][] batches = new double[numBatches][batchSize];
@@ -51,13 +61,14 @@ public class InfiniteHorizonBatchSimulation {
                 // Qui puoi inserire la logica per elaborare il batch, ad esempio calcolare la media
                 //double batchMean = calculateBatchMean(batch);
             }
-            /*System.out.println("\n");
-            System.out.println("Lunghezza batch: " + batch.length);
-            int count = 0;
-            for (double elem: batch) {
-                System.out.println("Batch[" + count + "]: " + elem);
-                count++;
-            }*//*
+
+            //System.out.println("\n");
+            //System.out.println("Lunghezza batch: " + batch.length);
+            //int count = 0;
+            //for (double elem: batch) {
+                //System.out.println("Batch[" + count + "]: " + elem);
+               // count++;
+            //}
             batches[batchIndex] = batch;
             batchIndex++;
             i += batchSize;
@@ -67,11 +78,11 @@ public class InfiniteHorizonBatchSimulation {
                 Thread.sleep(1000); // Attendi per 1 secondo tra le elaborazioni
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         /*System.out.println("Numero di batch: " + batches.length);
         System.out.println("\n");*/
-/*
+
         double [] batchMeans = new double[numBatches];
         // parto da k=1 perché scarto il primo batch perché questo è influenzato dalle condizioni iniziali
         for (int k = 1; k < batches.length; k++) {
@@ -81,9 +92,12 @@ public class InfiniteHorizonBatchSimulation {
         }
         Files.writeString(batchMeansFile, out);
 
-        autocorrelation(batchMeans);*/
+        double[] autoc = autocorrelation(batchMeans);
+        for (double elem: autoc) {
+            System.out.println(elem);
+        }
         //System.out.println("numBatches = " + numBatches);
-        //estimate(batchMeans);*/
+        //estimate(batchMeans);
     }
 
     public static double calculateAverage(double[] values) {
@@ -126,8 +140,10 @@ public class InfiniteHorizonBatchSimulation {
             String line;
             while ((line = br.readLine()) != null) {
                 try {
-                    double responseTime = Double.parseDouble(line);
-                    responseTimes.add(responseTime);
+                    if (line != "") {
+                        double responseTime = Double.parseDouble(line);
+                        responseTimes.add(responseTime);
+                    }
                 } catch (NumberFormatException e) {
                     // Ignora le righe non valide nel file
                 }
@@ -188,15 +204,15 @@ public class InfiniteHorizonBatchSimulation {
         }
     }
 
-    public static void autocorrelation(double[] data) {
-        int[] lags = new int[11];
+    public static double[] autocorrelation(double[] data) {
+        /*int[] lags = new int[11];
         for (int l = 0; l < 11; l++) {
             lags[l] = l;
-        }
-        double[] autocorrelation = calculateAutocorrelation(data, batchSize, lags);
-        System.out.println("Batch size = " + batchSize);
+        }*/
+        double[] autocorrelation = calculateAutocorrelation(data);
+        //System.out.println("Batch size = " + batchSize);
         //autocorrelation[1] = 0.4;
-        for (double elem : autocorrelation)
+        /*for (double elem : autocorrelation)
             System.out.println(elem);
         while (autocorrelation[1] > 0.2) {
             batchSize = batchSize * 2;
@@ -205,16 +221,17 @@ public class InfiniteHorizonBatchSimulation {
             System.out.println("Batch size = "  + batchSize);
             for (double elem : autocorrelation)
                 System.out.println(elem);
-        }
+        }*/
+        return autocorrelation;
     }
 
-    public static double[] calculateAutocorrelation(double[] data, int batchSize, int[] lags) {
-        int dataSize = data.length;
+    //public static double[] calculateAutocorrelation(double[] data, int batchSize, int[] lags) {
+        /*int dataSize = data.length;
         int numBatches = dataSize / batchSize;
-        int remainder = dataSize % batchSize;
+        int remainder = dataSize % batchSize;*/
 
         // Pre-allocate autocorrelation table
-        double[] autocorrelation = new double[lags.length];
+       /* double[] autocorrelation = new double[lags.length];
 
         // Calculate mean and variance for the entire data
         double mean = calculateMean(data);
@@ -240,7 +257,38 @@ public class InfiniteHorizonBatchSimulation {
         }
 
         return autocorrelation;
+    }*/
+
+    public static double[] calculateAutocorrelation(double[] data) {
+        int n = data.length;
+        double[] autocorrelation = new double[n];
+
+        // Calcola la media dei dati
+        double mean = 0.0;
+        for (double value : data) {
+            mean += value;
+        }
+        mean /= n;
+
+        // Calcola la varianza dei dati
+        double variance = 0.0;
+        for (double value : data) {
+            variance += Math.pow(value - mean, 2);
+        }
+        variance /= n;
+
+        // Calcola l'autocorrelazione per ogni lag
+        for (int lag = 0; lag < 10; lag++) {
+            double sum = 0.0;
+            for (int i = 0; i < n - lag; i++) {
+                sum += (data[i] - mean) * (data[i + lag] - mean);
+            }
+            autocorrelation[lag] = sum / ((n - lag) * variance);
+        }
+
+        return autocorrelation;
     }
+
 
     public static double calculateMean(double[] data) {
         double sum = 0;

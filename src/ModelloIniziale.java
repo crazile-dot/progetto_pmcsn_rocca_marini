@@ -25,12 +25,6 @@ class Area {
 }
 
 
-/*
-    COSE DA RIVEDERE:
-    - generazione valore randomico per la scelta del nodo: modalità e valori, avanzamento del seed (idx)
-    - aggiungere gestione fasce orarie (cambia il LAMBDA)
- */
-
 public class ModelloIniziale {
     static ArrayList<Double> ResponseTimeFF =new ArrayList<Double>();
     static ArrayList<Double> ResponseTimeN =new ArrayList<Double>();
