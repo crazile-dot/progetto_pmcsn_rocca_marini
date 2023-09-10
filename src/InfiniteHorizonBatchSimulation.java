@@ -9,11 +9,11 @@ public class InfiniteHorizonBatchSimulation {
     static final double LOC = 0.95;    /* level of confidence,        */
     static int batchSize = 32;   //b
     static int numBatches = 64;   //k
-    static Path batchMeansFile = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\batches.txt");
+    static Path batchMeansFile = Path.of("C:\\Users\\Adriano\\Desktop\\valori\\batches.txt");
 
 
     public static void main(String[] args) throws IOException {
-        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\prova.txt"; // Sostituisci con il percorso del tuo file di dati
+      /*  String dataFilePath = "C:\\Users\\Adriano\\Desktop\\prova.txt"; // Sostituisci con il percorso del tuo file di dati
 
         Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
 
@@ -22,7 +22,7 @@ public class InfiniteHorizonBatchSimulation {
         //generateRandomValuesAndSaveToFile(batchSize*numBatches, dataFilePath);
         ArrayList<Double> data = new ArrayList<>();
         String line = "";
-        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\prova.txt"));
+        //BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Adriano\\Desktop\\output.txt"));
         line = br.readLine();
         while (line != null) {
             StringTokenizer tokenizer = new StringTokenizer(line);
@@ -57,7 +57,7 @@ public class InfiniteHorizonBatchSimulation {
             for (double elem: batch) {
                 System.out.println("Batch[" + count + "]: " + elem);
                 count++;
-            }*/
+            }*//*
             batches[batchIndex] = batch;
             batchIndex++;
             i += batchSize;
@@ -67,11 +67,11 @@ public class InfiniteHorizonBatchSimulation {
                 Thread.sleep(1000); // Attendi per 1 secondo tra le elaborazioni
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
         /*System.out.println("Numero di batch: " + batches.length);
         System.out.println("\n");*/
-
+/*
         double [] batchMeans = new double[numBatches];
         // parto da k=1 perché scarto il primo batch perché questo è influenzato dalle condizioni iniziali
         for (int k = 1; k < batches.length; k++) {
@@ -81,9 +81,9 @@ public class InfiniteHorizonBatchSimulation {
         }
         Files.writeString(batchMeansFile, out);
 
-        autocorrelation(batchMeans);
+        autocorrelation(batchMeans);*/
         //System.out.println("numBatches = " + numBatches);
-        //estimate(batchMeans);
+        //estimate(batchMeans);*/
     }
 
     public static double calculateAverage(double[] values) {
