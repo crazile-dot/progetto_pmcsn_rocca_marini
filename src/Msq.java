@@ -37,12 +37,12 @@ class Msq {
 
     /* per la simulazione ad orizzonte infinito */
     static int maxArrival = InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches;
-    static int simulation = 1;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
+    static int simulation = 0;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
     static int jobCounter = 0;
 
     static double LAMBDA;
     static double SERVICE;
-    static double fasciaOraria = MMValues.fasciaOraria3;
+    static double fasciaOraria = MMValues.fasciaOraria1;
 
     static int SERVER_DEDICATO=1; /* SERVER DEDICATO per i frequent flyers */
     static double sarrival = START;
@@ -1773,7 +1773,7 @@ class Msq {
         double summa = 0.0;
         for (s=0; s<= ResponseTimeFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeFF.get(s));
-            out += ResponseTimeFF.get(s)+"\n";
+            out += s+","+ResponseTimeFF.get(s)+"\n";
             summa += ResponseTimeFF.get(s);
         }
         double meanBiglRespFF = summa/ResponseTimeFF.size();
@@ -1783,7 +1783,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeN.get(s));
-            out += ResponseTimeN.get(s)+"\n";
+            out += s+","+ResponseTimeN.get(s)+"\n";
             summa += ResponseTimeN.get(s);
         }
         double meanRespBiglN = summa/ResponseTimeN.size();
@@ -1793,7 +1793,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInFF.get(s));
-            out += ResponseTimeCheckInFF.get(s)+"\n";
+            out += s+","+ResponseTimeCheckInFF.get(s)+"\n";
             summa += ResponseTimeCheckInFF.get(s);
         }
         double meanRespCheckFF = summa/ResponseTimeCheckInFF.size();
@@ -1803,7 +1803,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInN.get(s));
-            out += ResponseTimeCheckInN.get(s)+"\n";
+            out += s+","+ResponseTimeCheckInN.get(s)+"\n";
             summa += ResponseTimeCheckInN.get(s);
         }
         double meanRespCheckN = summa/ResponseTimeCheckInN.size();
@@ -1813,7 +1813,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityN.get(s));
-            out += ResponseTimeSecurityN.get(s)+"\n";
+            out += s+","+ResponseTimeSecurityN.get(s)+"\n";
             summa += ResponseTimeSecurityN.get(s);
         }
         double meanRespSecN = summa/ResponseTimeSecurityN.size();
@@ -1823,7 +1823,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityFF.get(s));
-            out += ResponseTimeSecurityFF.get(s)+"\n";
+            out += s+","+ResponseTimeSecurityFF.get(s)+"\n";
             summa += ResponseTimeSecurityFF.get(s);
         }
         double meanRespSecFF = summa/ResponseTimeSecurityFF.size();
@@ -1833,7 +1833,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
-            out += ResponseTimeImbarcoFF.get(s)+"\n";
+            out += s+","+ResponseTimeImbarcoFF.get(s)+"\n";
             summa += ResponseTimeImbarcoFF.get(s);
         }
         double meanRespImbFF = summa/ResponseTimeImbarcoFF.size();
@@ -1843,7 +1843,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoN.get(s));
-            out += ResponseTimeImbarcoN.get(s)+"\n";
+            out += s+","+ResponseTimeImbarcoN.get(s)+"\n";
             summa += ResponseTimeImbarcoN.get(s);
         }
         double meanRespImbN = summa/ResponseTimeImbarcoN.size();
@@ -1853,7 +1853,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
-            out += ResponseTimeSecurityAppN.get(s)+"\n";
+            out += s+","+ResponseTimeSecurityAppN.get(s)+"\n";
             summa += ResponseTimeSecurityAppN.get(s);
         }
         double meanRespSecAppN = summa/ResponseTimeSecurityAppN.size();
@@ -1863,7 +1863,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppFF.get(s));
-            out += ResponseTimeSecurityAppFF.get(s)+"\n";
+            out += s+","+ResponseTimeSecurityAppFF.get(s)+"\n";
             summa += ResponseTimeSecurityAppFF.get(s);
         }
         double meanRespSecAppFF = summa/ResponseTimeSecurityAppFF.size();
@@ -1873,7 +1873,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaN.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaN.get(s));
-            out += ResponseTimeCartaN.get(s)+"\n";
+            out += s+","+ResponseTimeCartaN.get(s)+"\n";
             summa += ResponseTimeCartaN.get(s);
         }
         double meanRespCartaN = summa/ResponseTimeCartaN.size();
@@ -1883,7 +1883,7 @@ class Msq {
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaFF.size()-1; s++){
             System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaFF.get(s));
-            out += ResponseTimeCartaFF.get(s)+"\n";
+            out += s+","+ResponseTimeCartaFF.get(s)+"\n";
             summa += ResponseTimeCartaFF.get(s);
         }
         double meanRespCartaFF = summa/ResponseTimeCartaFF.size();

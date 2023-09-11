@@ -87,7 +87,8 @@ public class TEMP {
             line = br.readLine();
         }
 
-        double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
+        double[] responses = new double[FiniteHorizonSimulation.jobNum];
+        //double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
         for (int i = 0; i < responses.length; i++) {
             responses[i] = -1;
         }
@@ -127,7 +128,8 @@ public class TEMP {
 
         for (int i = 0; i < responses.length; i++) {
             if (responses[i] == -1) {
-                responses[i] = responses[i/2 - 100];
+                //responses[i] = responses[i/2 - 100];
+                responses[i] = responses[i/2];
             }
         }
 
@@ -135,8 +137,8 @@ public class TEMP {
 
         Path responseN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseN.txt");
         String out = "";
-        for (double elem: responses) {
-            out += elem + "\n";
+        for (int i = 0; i < responses.length; i++) {
+            out += i+","+responses[i] + "\n";
         }
         Files.writeString(responseN, out);
     }
@@ -215,7 +217,8 @@ public class TEMP {
             line = br.readLine();
         }
 
-        double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
+        double[] responses = new double[FiniteHorizonSimulation.jobNum];
+        //double[] responses = new double[InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches];
         for (int i = 0; i < responses.length; i++) {
             responses[i] = -1;
         }
@@ -263,9 +266,8 @@ public class TEMP {
 
         Path responseFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\responseFF.txt");
         String out = "";
-        for (double elem: responses) {
-            if (elem != -1)
-                out += elem + "\n";
+        for (int i = 0; i < responses.length; i++) {
+            out += i+1+","+responses[i] + "\n";
         }
         Files.writeString(responseFF, out);
     }

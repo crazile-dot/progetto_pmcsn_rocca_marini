@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,17 +10,18 @@ import java.util.StringTokenizer;
 
 public class FiniteHorizonSimulation {
 
-    private static int jobNum = 10;
+    static int jobNum = 100000;
     static final double LOC = 0.95;    /* level of confidence,        */
 
 
     public static void main(String[] args) throws IOException {
-        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\prova.txt"; // Sostituisci con il percorso del tuo file di dati
+        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\responseN.txt"; // Sostituisci con il percorso del tuo file di dati
+        //Path transientMeans = Path.o"C:\\Users\\Ilenia\\Desktop\\valori\\transientMeans.txt";
 
-        Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
+        //Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
         ArrayList<Double> data = new ArrayList<>();
         String line = "";
-        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\prova.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Ilenia\\Desktop\\valori\\responseFF.txt"));
         line = br.readLine();
         while (line != null) {
             StringTokenizer tokenizer = new StringTokenizer(line);
@@ -30,10 +32,11 @@ public class FiniteHorizonSimulation {
         }
 
         double [] replica = new double[jobNum];
-        for (int i = 0; i < jobNum; i++) {
+        for (int i = 0; i < jobNum && i < data.size(); i++) {
             replica[i] = data.get(i);
         }
-        estimate(replica);
+        //estimate(replica);
+
     }
 
     // Funzione per leggere i tempi di risposta da un file

@@ -52,19 +52,20 @@ public class ModelloIniziale {
     static ArrayList<Double> WaitSecurityAppN =new ArrayList<Double>();
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
-    static double STOP  = 20000000.0;          /* terminal (close the door) time */
+    static double STOP  = 2000.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
     /* per la simulazione ad orizzonte infinito */
     static int maxArrival = InfiniteHorizonBatchSimulation.batchSize * InfiniteHorizonBatchSimulation.numBatches;
-    static int simulation = 1;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
+    static int simulation = 0;  /* 0 = simulazione spenta, 1 = simulazione orizzonte infinito, 2 = simulazione orizzonte finito */
     static int jobCounter = 0;
     static int flag = -1;
-    static double[] risposta_globali= new double[4096];
-    static int job=0;
+    static int nJobs = FiniteHorizonSimulation.jobNum;
+    //static double[] risposta_globali= new double[InfiniteHorizonBatchSimulation.batchSize*InfiniteHorizonBatchSimulation.numBatches];
+    static int job=-1;
     static double LAMBDA;
     static double SERVICE = 2;
-    static double fasciaOraria = MMValues.fasciaOraria3;
+    static double fasciaOraria = MMValues.fasciaOraria1;
 
     static int SERVERS = 4;              /* number of servers */
     static int NODES = 16;
@@ -102,7 +103,7 @@ public class ModelloIniziale {
         int idx = 1;
 
         Rngs r = new Rngs();
-        r.plantSeeds(123456789);
+        r.plantSeeds(1965998004);
 
 
         //long   numberM = 0;             /* number in the node                 */
@@ -167,6 +168,7 @@ public class ModelloIniziale {
         while ((event[0].x != 0) || event[1].x != 0 || (number != 0)) {
             int q=0;
             System.out.println("ILNUMERO DEI JOB NEL SISTEMA E':" + number);
+            System.out.println("JOBCOUNTER: " + jobCounter);
             /* q = 1;
             for (s = 2; s <= 1+Values.SERVERS_BIGLIETTERIA; s++) {
                 System.out.println("server biglietteria  " + q + ":" + event[s].x);
@@ -282,7 +284,14 @@ public class ModelloIniziale {
                         event[1].x = 0;
                     }
                 } else if (simulation == 2) {  /* simulazione orizzonte finito */
-
+                    if (nJobs > 1) {
+                        nJobs--;
+                    }
+                    else {
+                        flag = 1;
+                        event[0].x = 0;
+                        event[1].x = 0;
+                    }
                 }
                 number++;
                 jobCounter++;
@@ -795,7 +804,7 @@ public class ModelloIniziale {
                     event[s].departure=t.current;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeN.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitN.add(WaitingTime);
 
@@ -817,7 +826,7 @@ public class ModelloIniziale {
                     event[s].departure=t.current;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitFF.add(WaitingTime);
                     System.out.println("\n*** Sto processando una departure del server dedicato***");
@@ -848,7 +857,7 @@ public class ModelloIniziale {
                     nodes[2].index--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCheckInFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCheckInFF.add(WaitingTime);
                     int k =find_best_server_dedicato();
@@ -879,7 +888,7 @@ public class ModelloIniziale {
                     nodes[3].index--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCheckInN.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCheckInN.add(WaitingTime);
                     int server=find_best_server();
@@ -911,7 +920,7 @@ public class ModelloIniziale {
                     event[e+1+Values.SERVERS_SCANSIONE_CARTA+1].job=event[s].job;;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaFF.add(WaitingTime);
                     nodes[4].number--;
@@ -939,7 +948,7 @@ public class ModelloIniziale {
                     event[e+Values.SERVERS_SCANSIONE_CARTA+1].job=event[s].job;;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaFF.add(WaitingTime);
                     System.out.println("\n*** Sto processando una departure del server dedicato carta imbarco***");
@@ -970,7 +979,7 @@ public class ModelloIniziale {
                    // number--;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeCartaN.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitCartaN.add(WaitingTime);
                     int nu=find_number_node(e);
@@ -1017,7 +1026,7 @@ public class ModelloIniziale {
                     nodes[10].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeSecurityFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitSecurityFF.add(WaitingTime);
                     r.selectStream(10 + idx);
@@ -1054,7 +1063,7 @@ public class ModelloIniziale {
                     System.out.println("\n*** Sto processando una departure del server security***");
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeSecurityN.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitSecurityN.add(WaitingTime);
                     nodes[11].number--;
@@ -1118,7 +1127,7 @@ public class ModelloIniziale {
                         event[s].departure=t.current;
                         double RespondeTime=event[s].departure-event[s].arrival_time;
                         ResponseTimeSecurityAppFF.add(RespondeTime);
-                        risposta_globali[job]+=RespondeTime;
+                        //risposta_globali[job]+=RespondeTime;
                         double WaitingTime=RespondeTime-event[s].service;
                         WaitSecurityAppFF.add(WaitingTime);
                     }
@@ -1126,7 +1135,7 @@ public class ModelloIniziale {
                         event[s].departure=t.current;
                         double RespondeTime=event[s].departure-event[s].arrival_time;
                         ResponseTimeSecurityAppN.add(RespondeTime);
-                        risposta_globali[job]+=RespondeTime;
+                        //risposta_globali[job]+=RespondeTime;
                         double WaitingTime=RespondeTime-event[s].service;
                         WaitSecurityAppN.add(WaitingTime);
                     }
@@ -1177,7 +1186,7 @@ public class ModelloIniziale {
                     nodes[13].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeImbarcoFF.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitImbarcoFF.add(WaitingTime);
 
@@ -1203,7 +1212,7 @@ public class ModelloIniziale {
                     nodes[14].index++;
                     double ResponseTime=event[s].departure-event[s].arrival_time;
                     ResponseTimeImbarcoN.add(ResponseTime);
-                    risposta_globali[job]+=ResponseTime;
+                    //risposta_globali[job]+=ResponseTime;
                     double WaitingTime=ResponseTime-event[s].service;
                     WaitImbarcoN.add(WaitingTime);
                     if (nodes[14].number >= Values.SERVERS_IMBARCO) {
@@ -1399,7 +1408,7 @@ public class ModelloIniziale {
         double time1=0.0;
         int count=0;
         for (s=0; s<= ResponseTimeN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA Biglietteria N "+s+"E':"+ ResponseTimeN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA Biglietteria N "+s+"E':"+ ResponseTimeN.get(s));
             count++;
             time1+=ResponseTimeN.get(s);
         }
@@ -1409,7 +1418,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA Biglietteria FF "+s+"E':"+ ResponseTimeN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA Biglietteria FF "+s+"E':"+ ResponseTimeN.get(s));
             time1+=ResponseTimeFF.get(s);
             count++;
         }
@@ -1418,7 +1427,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeCheckInN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA check in N "+s+"E':"+ ResponseTimeCheckInN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA check in N "+s+"E':"+ ResponseTimeCheckInN.get(s));
             time1+=ResponseTimeCheckInN.get(s);
             count++;
         }
@@ -1427,7 +1436,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeCheckInFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA check in FF "+s+"E':"+ ResponseTimeCheckInFF.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA check in FF "+s+"E':"+ ResponseTimeCheckInFF.get(s));
             time1+=ResponseTimeCheckInFF.get(s);
             count++;
         }
@@ -1436,7 +1445,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeCartaN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA scansione carta N "+s+"E':"+ ResponseTimeCartaN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA scansione carta N "+s+"E':"+ ResponseTimeCartaN.get(s));
             time1+=ResponseTimeCartaN.get(s);
             count++;
         }
@@ -1445,7 +1454,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeCartaFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA scansione carta FF "+s+"E':"+ ResponseTimeCartaFF.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA scansione carta FF "+s+"E':"+ ResponseTimeCartaFF.get(s));
             time1+=ResponseTimeCartaFF.get(s);
             count++;
         }
@@ -1454,7 +1463,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeSecurityN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA security N "+s+"E':"+ ResponseTimeSecurityN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA security N "+s+"E':"+ ResponseTimeSecurityN.get(s));
             time1+=ResponseTimeSecurityN.get(s);
             count++;
         }
@@ -1463,7 +1472,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeSecurityFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA security FF "+s+"E':"+ ResponseTimeSecurityFF.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA security FF "+s+"E':"+ ResponseTimeSecurityFF.get(s));
             time1+=ResponseTimeSecurityFF.get(s);
             count++;
         }
@@ -1472,7 +1481,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeSecurityAppN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA security app N "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA security app N "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
             time1+=ResponseTimeSecurityAppN.get(s);
             count++;
         }
@@ -1481,7 +1490,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeSecurityAppFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA security app FF "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA security app FF "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
             time1+=ResponseTimeSecurityAppFF.get(s);
             count++;
         }
@@ -1490,7 +1499,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeImbarcoN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA imbarco  N "+s+"E':"+ ResponseTimeImbarcoN.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA imbarco  N "+s+"E':"+ ResponseTimeImbarcoN.get(s));
             time1+=ResponseTimeImbarcoN.get(s);
             count++;
         }
@@ -1499,7 +1508,7 @@ public class ModelloIniziale {
         time1=0.0;
         count=0;
         for (s=0; s<= ResponseTimeImbarcoFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA imbarco FF "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
+            //System.out.println("IL TEMPO DI RISPOSTA imbarco FF "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
             time1+=ResponseTimeImbarcoFF.get(s);
             count++;
         }
@@ -1739,7 +1748,7 @@ public class ModelloIniziale {
             tempo+=sum[s].service;
         }   System.out.println("La media servizio biglietteria è:"+(tempo/count));
 */
-/*
+
         Path waitBiglietteriaFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaFF.txt");
         Path waitBiglietteriaN = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitBiglietteriaN.txt");
         Path waitCheckinFF = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\waitCheckinFF.txt");
@@ -1770,8 +1779,8 @@ public class ModelloIniziale {
         System.out.println("*********************************");
         double summa = 0.0;
         for (s=0; s<= ResponseTimeFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeFF.get(s));
-            out += ResponseTimeFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeFF.get(s));
+            out += s+","+ResponseTimeFF.get(s)+"\n";
             summa += ResponseTimeFF.get(s);
         }
         double meanBiglRespFF = summa/ResponseTimeFF.size();
@@ -1780,8 +1789,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeN.get(s));
-            out += ResponseTimeN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeN.get(s));
+            out += s+","+ResponseTimeN.get(s)+"\n";
             summa += ResponseTimeN.get(s);
         }
         double meanRespBiglN = summa/ResponseTimeN.size();
@@ -1790,8 +1799,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInFF.get(s));
-            out += ResponseTimeCheckInFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInFF.get(s));
+            out += s+","+ResponseTimeCheckInFF.get(s)+"\n";
             summa += ResponseTimeCheckInFF.get(s);
         }
         double meanRespCheckFF = summa/ResponseTimeCheckInFF.size();
@@ -1800,8 +1809,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCheckInN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInN.get(s));
-            out += ResponseTimeCheckInN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCheckInN.get(s));
+            out += s+","+ResponseTimeCheckInN.get(s)+"\n";
             summa += ResponseTimeCheckInN.get(s);
         }
         double meanRespCheckN = summa/ResponseTimeCheckInN.size();
@@ -1810,8 +1819,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityN.get(s));
-            out += ResponseTimeSecurityN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityN.get(s));
+            out += s+","+ResponseTimeSecurityN.get(s)+"\n";
             summa += ResponseTimeSecurityN.get(s);
         }
         double meanRespSecN = summa/ResponseTimeSecurityN.size();
@@ -1820,8 +1829,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityFF.get(s));
-            out += ResponseTimeSecurityFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityFF.get(s));
+            out += s+","+ResponseTimeSecurityFF.get(s)+"\n";
             summa += ResponseTimeSecurityFF.get(s);
         }
         double meanRespSecFF = summa/ResponseTimeSecurityFF.size();
@@ -1830,8 +1839,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
-            out += ResponseTimeImbarcoFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoFF.get(s));
+            out += s+","+ResponseTimeImbarcoFF.get(s)+"\n";
             summa += ResponseTimeImbarcoFF.get(s);
         }
         double meanRespImbFF = summa/ResponseTimeImbarcoFF.size();
@@ -1840,8 +1849,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeImbarcoN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoN.get(s));
-            out += ResponseTimeImbarcoN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeImbarcoN.get(s));
+            out += s+","+ResponseTimeImbarcoN.get(s)+"\n";
             summa += ResponseTimeImbarcoN.get(s);
         }
         double meanRespImbN = summa/ResponseTimeImbarcoN.size();
@@ -1850,8 +1859,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
-            out += ResponseTimeSecurityAppN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppN.get(s));
+            out += s+","+ResponseTimeSecurityAppN.get(s)+"\n";
             summa += ResponseTimeSecurityAppN.get(s);
         }
         double meanRespSecAppN = summa/ResponseTimeSecurityAppN.size();
@@ -1860,8 +1869,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeSecurityAppFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppFF.get(s));
-            out += ResponseTimeSecurityAppFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeSecurityAppFF.get(s));
+            out += s+","+ResponseTimeSecurityAppFF.get(s)+"\n";
             summa += ResponseTimeSecurityAppFF.get(s);
         }
         double meanRespSecAppFF = summa/ResponseTimeSecurityAppFF.size();
@@ -1870,8 +1879,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaN.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaN.get(s));
-            out += ResponseTimeCartaN.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaN.get(s));
+            out += s+","+ResponseTimeCartaN.get(s)+"\n";
             summa += ResponseTimeCartaN.get(s);
         }
         double meanRespCartaN = summa/ResponseTimeCartaN.size();
@@ -1880,8 +1889,8 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= ResponseTimeCartaFF.size()-1; s++){
-            System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaFF.get(s));
-            out += ResponseTimeCartaFF.get(s)+"\n";
+            //System.out.println("IL TEMPO DI RISPOSTA "+s+"E':"+ ResponseTimeCartaFF.get(s));
+            out += s+","+ResponseTimeCartaFF.get(s)+"\n";
             summa += ResponseTimeCartaFF.get(s);
         }
         double meanRespCartaFF = summa/ResponseTimeCartaFF.size();
@@ -1891,7 +1900,7 @@ public class ModelloIniziale {
         System.out.println("*********************************");
         System.out.println("*********************************");
         for (s=0; s<= WaitCartaFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaFF.get(s));
             double value = WaitCartaFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1904,7 +1913,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCartaN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCartaN.get(s));
             double value = WaitCartaN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1917,7 +1926,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitFF.get(s));
             double value = WaitFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1930,7 +1939,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitN.get(s));
             double value = WaitN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1943,7 +1952,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCheckInFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInFF.get(s));
             double value = WaitCheckInFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1956,7 +1965,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitCheckInN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitCheckInN.get(s));
             double value = WaitCheckInN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1969,7 +1978,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityFF.get(s));
             double value = WaitSecurityFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1982,7 +1991,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityN.get(s));
             double value = WaitSecurityN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -1995,7 +2004,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitImbarcoFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoFF.get(s));
             double value = WaitImbarcoFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -2008,7 +2017,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitImbarcoN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitImbarcoN.get(s));
             double value = WaitImbarcoN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -2021,7 +2030,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityAppFF.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppFF.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppFF.get(s));
             double value = WaitSecurityAppFF.get(s);
             if (value < 0)
                 value = 0.0;
@@ -2034,7 +2043,7 @@ public class ModelloIniziale {
         summa = 0.0;
         System.out.println("*********************************");
         for (s=0; s<= WaitSecurityAppN.size()-1; s++){
-            System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppN.get(s));
+            //System.out.println("IL TEMPO DI ATTESA "+s+"E':"+ WaitSecurityAppN.get(s));
             double value = WaitSecurityAppN.get(s);
             if (value < 0)
                 value = 0.0;
@@ -2137,10 +2146,18 @@ public class ModelloIniziale {
         System.out.println(numberContrApp);
         System.out.println(numberContrAppDedic);*/
 
+        Path risp_glob = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\risp_globali.txt");
+        out = "";
         System.out.println(jobCounter);
-        for(int poiu=0;poiu<3000;poiu++){
+        //double m = risposta_globali[risposta_globali.length-1]/(InfiniteHorizonBatchSimulation.numBatches*InfiniteHorizonBatchSimulation.batchSize);
+        /*for(int poiu=0;poiu<InfiniteHorizonBatchSimulation.numBatches*InfiniteHorizonBatchSimulation.batchSize;poiu++){
             System.out.println("numero: "+poiu+"  "+risposta_globali[poiu]);
+            if (poiu == risposta_globali.length-1)
+                risposta_globali[poiu] = m;
+            out +=risposta_globali[poiu]+m+"\n";
         }
+        Files.writeString(risp_glob, out);*/
+
 
     }
 

@@ -4,7 +4,6 @@ public class MMValues {
     public static int SERVER_BIGLIETTERIA_DEDICATO=3;
     public static int SERVER_CHECK_IN=100;
     public static int SERVER_CHECK_DEDICATO=10;
-
     public static int SERVER_CARTA_IMBARCO=4;
     public static int SERVER_CARTA_IMBARCO_DEDICATO=2;
     public static int SERVER_SECURITY=6;

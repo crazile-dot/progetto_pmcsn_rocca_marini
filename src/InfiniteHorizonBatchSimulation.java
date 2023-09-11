@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 public class InfiniteHorizonBatchSimulation {
 
     static final double LOC = 0.95;    /* level of confidence,        */
-    static int batchSize = 64;   //b
+    static int batchSize = 32;   //b
     static int numBatches = 64;   //k
     static Path batchMeansFile = Path.of("C:\\Users\\Ilenia\\Desktop\\valori\\batches.txt");
 
 
     public static void main(String[] args) throws IOException {
 
-        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\valori\\responseN.txt"; // Sostituisci con il percorso del tuo file di dati
+        String dataFilePath = "C:\\Users\\Ilenia\\Desktop\\valori\\responseFF.txt"; // Sostituisci con il percorso del tuo file di dati
 
         Queue<Double> responseTimes = readResponseTimesFromFile(dataFilePath);
         System.out.println("DIMENSIONE QUEUE: " + responseTimes.size());
@@ -93,12 +93,12 @@ public class InfiniteHorizonBatchSimulation {
         }
         Files.writeString(batchMeansFile, out);
 
-        List<Double> autoc = autocorrelation(Arrays.stream(batchMeans)
+        /*List<Double> autoc = autocorrelation(Arrays.stream(batchMeans)
                 .boxed()
                 .collect(Collectors.toList()), batchSize);
         for (double elem: autoc) {
             System.out.println(elem);
-        }
+        }*/
         //System.out.println("numBatches = " + numBatches);
         //estimate(batchMeans);
     }
