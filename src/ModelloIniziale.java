@@ -2192,7 +2192,15 @@ public class ModelloIniziale {
         return (a + (b - a) * r.random());
     }
 
-    public static double getArrival(Rngs r) {
+    /*
+        jobType:
+            0: FF
+            1: N
+     */
+    public static double getArrival(Rngs r, int jobType) {
+
+        double lambda0 = 0.0;
+        double lambda1 = 0.0;
 
         if (fasciaOraria == MMValues.fasciaOraria1)
             LAMBDA = MMValues.arrivalFascia1;
@@ -2205,9 +2213,33 @@ public class ModelloIniziale {
         if (fasciaOraria == MMValues.fasciaOraria5)
             LAMBDA = MMValues.arrivalFascia5;
 
-        r.selectStream(0);
-        sarrival += exponential(1/LAMBDA, r);
-        return (ModelloIniziale.sarrival);
+        lambda0 = MMValues.FFPercentage*LAMBDA;
+        lambda1 = MMValues.NPercentage*LAMBDA;
+
+        double mean[] = {1/lambda0, 1/lambda1};
+        double arrival[] = {START, START};
+        int init = 1;
+        double temp;
+
+        if (init == 1) {
+            r.selectStream(0);
+            arrival[0] += exponential(mean[0], r);
+            r.selectStream(1);
+            arrival[1] += exponential(mean[1], r);
+            init = 0;
+        }
+        if (arrival[0] <= arrival[1]) {
+            jobType = 0;
+        } else {
+            jobType = 1;
+        }
+        temp = arrival[jobType];
+        r.selectStream(jobType);
+        arrival[jobType] += exponential(mean[jobType], r);
+        return temp;
+
+        //sarrival += exponential(1/LAMBDA, r);
+        //return (ModelloIniziale.sarrival);
     }
 
     public static double getServiceBigl(Rngs r) {
