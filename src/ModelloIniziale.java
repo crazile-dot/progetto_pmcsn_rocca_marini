@@ -52,6 +52,8 @@ public class ModelloIniziale {
     static ArrayList<Double> WaitSecurityAppN =new ArrayList<Double>();
     static int SERVERS_DEDICATO=1;
     static double START = 0.0;              /* initial time                   */
+    static double arrival[] = {START, START};
+    static int init = 1;
     static double STOP  = 2000.0;          /* terminal (close the door) time */
     static double INFINITY = 1000.0 * STOP;  /* must be much larger than STOP  */
 
@@ -84,7 +86,9 @@ public class ModelloIniziale {
     static int numb_wait_imbarco=0;
     static int numb_wait_imbarcoD=0;
     static int ya=0;
-    public static void main(String[] args) throws IOException {
+
+
+    public static void startProcess(String[] args) throws IOException {
         double tBigliett = 0.0;
         double tBigliettD = 0.0;
         double tCheckIn = 0.0;
@@ -2197,11 +2201,8 @@ public class ModelloIniziale {
             0: FF
             1: N
      */
-    public static double getArrival(Rngs r, int jobType) {
 
-        double lambda0 = 0.0;
-        double lambda1 = 0.0;
-
+    public static double getArrival (Rngs r) {
         if (fasciaOraria == MMValues.fasciaOraria1)
             LAMBDA = MMValues.arrivalFascia1;
         if (fasciaOraria == MMValues.fasciaOraria2)
@@ -2213,33 +2214,105 @@ public class ModelloIniziale {
         if (fasciaOraria == MMValues.fasciaOraria5)
             LAMBDA = MMValues.arrivalFascia5;
 
-        lambda0 = MMValues.FFPercentage*LAMBDA;
-        lambda1 = MMValues.NPercentage*LAMBDA;
+        r.selectStream(0);
+        sarrival += exponential(1/LAMBDA, r);
+        return (ModelloIniziale.sarrival);
+    }
 
-        double mean[] = {1/lambda0, 1/lambda1};
-        double arrival[] = {START, START};
-        int init = 1;
-        double temp;
+    public static void main(String args[]) {
+        Rngs r = new Rngs();
+        getArrivalTest2(r);
+    }
 
-        if (init == 1) {
-            r.selectStream(0);
-            arrival[0] += exponential(mean[0], r);
-            r.selectStream(1);
-            arrival[1] += exponential(mean[1], r);
-            init = 0;
+    public static double getArrivalTest1 (Rngs r) {
+        if (fasciaOraria == MMValues.fasciaOraria1)
+            LAMBDA = MMValues.arrivalFascia1;
+        if (fasciaOraria == MMValues.fasciaOraria2)
+            LAMBDA = MMValues.arrivalFascia2;
+        if (fasciaOraria == MMValues.fasciaOraria3)
+            LAMBDA = MMValues.arrivalFascia3;
+        if (fasciaOraria == MMValues.fasciaOraria4)
+            LAMBDA = MMValues.arrivalFascia4;
+        if (fasciaOraria == MMValues.fasciaOraria5)
+            LAMBDA = MMValues.arrivalFascia5;
+
+        r.selectStream(0);
+        sarrival += exponential(1/LAMBDA, r);
+        return (ModelloIniziale.sarrival);
+    }
+
+    public static void getArrivalTest2 (Rngs r) {
+
+        int t0 = 0;
+        int t1 = 0;
+
+        for (int i = 0; i < 10000; i++) {
+
+            double lambda0 = 0.0;
+            double lambda1 = 0.0;
+
+            //seleziona il valore di lambda in base alla fascia oraria
+            if (fasciaOraria == MMValues.fasciaOraria1)
+                LAMBDA = MMValues.arrivalFascia1;
+            if (fasciaOraria == MMValues.fasciaOraria2)
+                LAMBDA = MMValues.arrivalFascia2;
+            if (fasciaOraria == MMValues.fasciaOraria3)
+                LAMBDA = MMValues.arrivalFascia3;
+            if (fasciaOraria == MMValues.fasciaOraria4)
+                LAMBDA = MMValues.arrivalFascia4;
+            if (fasciaOraria == MMValues.fasciaOraria5)
+                LAMBDA = MMValues.arrivalFascia5;
+
+            //differenziamo il lambda di tipo 0 e tipo 1
+            lambda0 = MMValues.FFPercentage * LAMBDA;
+            lambda1 = MMValues.NPercentage * LAMBDA;
+
+            //System.out.println("lambda0: " + lambda0);
+            //System.out.println("lambda1: " + lambda1);
+
+            double mean[] = {1 / lambda0, 1 / lambda1}; //inizializzazione valori di lambda, resterà sempre così
+            //double arrival[] = {START, START}; //inizializzazione valori degli arrivi, verranno aggiornati ad ogni arrivo
+            //int init = 1;
+            double temp;
+            int jobType;
+
+            //inizializzazione dei due arrivi fatta solo la prima volta
+            if (init == 1) {
+                r.selectStream(0);
+                arrival[0] += exponential(mean[0], r);
+                r.selectStream(1);
+                arrival[1] += exponential(mean[1], r);
+                init = 0;
+            }
+
+            System.out.println("Arrivo 0: " + arrival[0]);
+            System.out.println("Arrivo 1: " + arrival[1]);
+
+            //prendo l'arrivo più piccolo: quello sarà il prossimo e fisso il tipo di job del primo arrivo
+            if (arrival[0] <= arrival[1]) {
+                jobType = 0;
+                t0++;
+            } else {
+                jobType = 1;
+                t1++;
+            }
+            //questo è l'arrivo che vado a ritornare
+            temp = arrival[jobType];
+
+            //Ho finito, ma prima va aggiornato lo stream e il tempo del job successivo del tipo che è stato utilizzato, per il prossimo giro
+            r.selectStream(jobType);
+            arrival[jobType] += exponential(mean[jobType], r);
+
+            System.out.println("Arrivo winner: " + temp);
+            System.out.println("Job winner: " + jobType);
+            System.out.println("Next arrivo job winner: " + arrival[jobType]);
         }
-        if (arrival[0] <= arrival[1]) {
-            jobType = 0;
-        } else {
-            jobType = 1;
-        }
-        temp = arrival[jobType];
-        r.selectStream(jobType);
-        arrival[jobType] += exponential(mean[jobType], r);
-        return temp;
 
-        //sarrival += exponential(1/LAMBDA, r);
-        //return (ModelloIniziale.sarrival);
+        //return temp;
+        System.out.println("#tipo0: " + t0);
+        System.out.println("#tipo1: " + t1);
+
+
     }
 
     public static double getServiceBigl(Rngs r) {
