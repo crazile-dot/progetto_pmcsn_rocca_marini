@@ -2219,11 +2219,6 @@ public class ModelloIniziale {
         return (ModelloIniziale.sarrival);
     }
 
-    public static void main(String args[]) {
-        Rngs r = new Rngs();
-        getArrivalTest2(r);
-    }
-
     public static double getArrivalTest1 (Rngs r) {
         if (fasciaOraria == MMValues.fasciaOraria1)
             LAMBDA = MMValues.arrivalFascia1;
@@ -2315,6 +2310,72 @@ public class ModelloIniziale {
 
     }
 
+    public static void main(String args[]) {
+        Rngs r = new Rngs();
+        //getArrivalTest2(r);
+
+        System.out.println("Service bigl FF: " + getServiceBigl(r, 0));
+        System.out.println("Service bigl N: " + getServiceBigl(r, 1));
+        System.out.println(getServiceChk(r, 0));
+        System.out.println(getServiceChk(r, 1));
+        System.out.println(getServiceScann(r, 0));
+        System.out.println(getServiceScann(r, 1));
+        System.out.println(getServiceSec(r, 0));
+        System.out.println(getServiceSec(r, 1));
+        System.out.println(getServiceSec2(r, 0));
+        System.out.println(getServiceSec2(r, 1));
+        System.out.println(getServiceGate(r, 0));
+        System.out.println(getServiceGate(r, 1));
+    }
+
+    /*
+    stream 0: FF
+    stream 1: N
+     */
+    public static double getServiceBigl(Rngs r, int jobType) {
+        SERVICE = MMValues.biglService;
+        r.selectStream(jobType + 2);
+        return getService(r);
+    }
+
+    public static double getServiceChk(Rngs r, int jobType) {
+        SERVICE = MMValues.chckinService;
+        r.selectStream(jobType + 4);
+        return getService(r);
+    }
+
+    public static double getServiceScann(Rngs r, int jobType) {
+        SERVICE = MMValues.scannService;
+        r.selectStream(jobType + 6);
+        return getService(r);
+    }
+
+    public static double getServiceSec(Rngs r, int jobType) {
+        SERVICE = MMValues.securService;
+        r.selectStream(jobType + 8);
+        return getService(r);
+    }
+
+    public static double getServiceSec2(Rngs r, int jobType) {
+        SERVICE = MMValues.secur2Service;
+        r.selectStream(jobType + 10);
+        return getService(r);
+    }
+
+    public static double getServiceGate(Rngs r, int jobType) {
+        SERVICE = MMValues.gateService;
+        r.selectStream(jobType + 12);
+        return getService(r);
+    }
+
+    public static double getService(Rngs r) {
+        /* ------------------------------
+         * generate the next service time, with rate 1/6
+         * ------------------------------
+         */
+        return (exponential(SERVICE, r));
+    }
+
     public static double getServiceBigl(Rngs r) {
         SERVICE = MMValues.biglService;
         return getService(r);
@@ -2343,15 +2404,6 @@ public class ModelloIniziale {
     public static double getServiceGate(Rngs r) {
         SERVICE = MMValues.gateService;
         return getService(r);
-    }
-
-    public static double getService(Rngs r) {
-        /* ------------------------------
-         * generate the next service time, with rate 1/6
-         * ------------------------------
-         */
-        r.selectStream(1);
-        return (exponential(SERVICE, r));
     }
 
 
